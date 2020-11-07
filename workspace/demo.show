@@ -1,0 +1,8 @@
+[compiler.lambda_pure] >> const
+let _x_1 : _obj := 1 in _x_1
+[compiler.lambda_pure] >> higherorder
+λ (_x_1_x_2 : _obj), let _x_3 : _obj := _apply _x_1 _x_2 in _x_3
+[compiler.lambda_pure] >> higherorder2
+λ (_x_1_x_2_x_3 : _obj), let _x_4 : _obj := _apply _x_1 _x_2 _x_3 in _x_4
+[compiler.lambda_pure] >> baz
+λ (_x_1 : _obj), _x_1

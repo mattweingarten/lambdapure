@@ -1,0 +1,67 @@
+Performing C SOURCE FILE Test C_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW failed with the following output:
+Change Dir: /mnt/c/Users/Matthew/Desktop/lambdapure/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_f91a9"
+[1/2] Building C object CMakeFiles/cmTC_f91a9.dir/src.c.o
+FAILED: CMakeFiles/cmTC_f91a9.dir/src.c.o 
+/usr/bin/cc   -fPIC -Werror=date-time -DC_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW   -Werror -Werror=unguarded-availability-new -o CMakeFiles/cmTC_f91a9.dir/src.c.o   -c src.c
+cc1: error: -Werror=unguarded-availability-new: no option -Wunguarded-availability-new
+ninja: build stopped: subcommand failed.
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW failed with the following output:
+Change Dir: /mnt/c/Users/Matthew/Desktop/lambdapure/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_053eb"
+[1/2] Building CXX object CMakeFiles/cmTC_053eb.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_053eb.dir/src.cxx.o 
+/usr/bin/c++    -fPIC -fvisibility-inlines-hidden -Werror=date-time -DCXX_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW   -Werror -Werror=unguarded-availability-new -std=gnu++14 -o CMakeFiles/cmTC_053eb.dir/src.cxx.o -c src.cxx
+cc1plus: error: -Werror=unguarded-availability-new: no option -Wunguarded-availability-new
+ninja: build stopped: subcommand failed.
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test LINKER_SUPPORTS_COLOR_DIAGNOSTICS failed with the following output:
+Change Dir: /mnt/c/Users/Matthew/Desktop/lambdapure/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_5f14f"
+[1/2] Building CXX object CMakeFiles/cmTC_5f14f.dir/src.cxx.o
+[2/2] Linking CXX executable cmTC_5f14f
+FAILED: cmTC_5f14f 
+: && /usr/bin/c++  -fPIC -fvisibility-inlines-hidden -Werror=date-time -w -fdiagnostics-color -DLINKER_SUPPORTS_COLOR_DIAGNOSTICS  -Wl,--color-diagnostics CMakeFiles/cmTC_5f14f.dir/src.cxx.o  -o cmTC_5f14f   && :
+/usr/bin/ld: unrecognized option '--color-diagnostics'
+/usr/bin/ld: use the --help option for usage information
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+Source file was:
+int main() { return 0; }
+Determining if the os_signpost_interval_begin exist failed with the following output:
+Change Dir: /mnt/c/Users/Matthew/Desktop/lambdapure/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_447d6"
+[1/2] Building C object CMakeFiles/cmTC_447d6.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_447d6.dir/CheckSymbolExists.c.o 
+/usr/bin/cc   -fPIC -Werror=date-time -w -fdiagnostics-color -ffunction-sections -fdata-sections -o CMakeFiles/cmTC_447d6.dir/CheckSymbolExists.c.o   -c CheckSymbolExists.c
+CheckSymbolExists.c:2:10: fatal error: os/signpost.h: No such file or directory
+ #include <os/signpost.h>
+          ^~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+File /mnt/c/Users/Matthew/Desktop/lambdapure/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <os/signpost.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef os_signpost_interval_begin
+  return ((int*)(&os_signpost_interval_begin))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+

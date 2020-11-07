@@ -1,0 +1,1280 @@
+
+
+def pown._main (x_1 : obj) (x_2 : obj) : obj :=
+  let x_3 : obj := Int.zero;
+  let x_4 : u8 := Int.decEq x_2 x_3;
+  case x_4 : obj of
+  Bool.false →
+    let x_5 : obj := Int.one;
+    let x_6 : u8 := Int.decEq x_2 x_5;
+    case x_6 : obj of
+    Bool.false →
+      let x_7 : obj := stdNext._closed_1;
+      let x_8 : obj := Int.div x_2 x_7;
+      let x_9 : obj := pown._main x_1 x_8;
+      let x_10 : obj := Int.mul x_9 x_9;
+      let x_11 : obj := Int.mod x_2 x_7;
+      let x_12 : u8 := Int.decEq x_11 x_3;
+      case x_12 : obj of
+      Bool.false →
+        let x_13 : obj := Int.mul x_10 x_1;
+        ret x_13
+      Bool.true →
+        let x_14 : obj := Int.mul x_10 x_5;
+        ret x_14
+    Bool.true →
+      ret x_1
+  Bool.true →
+    let x_15 : obj := Int.one;
+    ret x_15
+
+def pown (x_1 : obj) (x_2 : obj) : obj :=
+  let x_3 : obj := pown._main x_1 x_2;
+  ret x_3
+
+def add._main (x_1 : obj) (x_2 : obj) : obj :=
+  case x_1 : obj of
+  Expr.Val →
+    let x_3 : obj := proj[0] x_1;
+    let x_4 : obj := Int.zero;
+    let x_5 : u8 := Int.decEq x_3 x_4;
+    case x_5 : obj of
+    Bool.false →
+      case x_2 : obj of
+      Expr.Val →
+        let x_6 : obj := proj[0] x_2;
+        let x_7 : obj := Int.add x_3 x_6;
+        let x_8 : obj := ctor_0[Expr.Val] x_7;
+        ret x_8
+      Expr.Var →
+        let x_9 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_9
+      Expr.Add →
+        let x_10 : obj := proj[0] x_2;
+        let x_11 : obj := proj[1] x_2;
+        case x_10 : obj of
+        Expr.Val →
+          let x_12 : obj := proj[0] x_10;
+          let x_13 : obj := Int.add x_3 x_12;
+          let x_14 : obj := ctor_0[Expr.Val] x_13;
+          let x_15 : obj := add._main x_14 x_11;
+          ret x_15
+        Expr.Var →
+          let x_16 : obj := ctor_2[Expr.Add] x_1 x_2;
+          ret x_16
+        Expr.Add →
+          let x_17 : obj := ctor_2[Expr.Add] x_1 x_2;
+          ret x_17
+        Expr.Mul →
+          let x_18 : obj := ctor_2[Expr.Add] x_1 x_2;
+          ret x_18
+        Expr.Pow →
+          let x_19 : obj := ctor_2[Expr.Add] x_1 x_2;
+          ret x_19
+        Expr.Ln →
+          let x_20 : obj := ctor_2[Expr.Add] x_1 x_2;
+          ret x_20
+      Expr.Mul →
+        let x_21 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_21
+      Expr.Pow →
+        let x_22 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_22
+      Expr.Ln →
+        let x_23 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_23
+    Bool.true →
+      case x_2 : obj of
+      Expr.Val →
+        let x_24 : obj := proj[0] x_2;
+        let x_25 : obj := Int.add x_4 x_24;
+        let x_26 : obj := ctor_0[Expr.Val] x_25;
+        ret x_26
+      Expr.Var →
+        ret x_2
+      Expr.Add →
+        ret x_2
+      Expr.Mul →
+        ret x_2
+      Expr.Pow →
+        ret x_2
+      Expr.Ln →
+        ret x_2
+  Expr.Var →
+    case x_2 : obj of
+    Expr.Val →
+      let x_27 : obj := proj[0] x_2;
+      let x_28 : obj := Int.zero;
+      let x_29 : u8 := Int.decEq x_27 x_28;
+      case x_29 : obj of
+      Bool.false →
+        let x_30 : obj := add._main x_2 x_1;
+        ret x_30
+      Bool.true →
+        ret x_1
+    Expr.Var →
+      let x_31 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_31
+    Expr.Add →
+      let x_32 : obj := proj[0] x_2;
+      let x_33 : obj := proj[1] x_2;
+      case x_32 : obj of
+      Expr.Val →
+        let x_34 : obj := add._main x_1 x_33;
+        let x_35 : obj := add._main x_32 x_34;
+        ret x_35
+      Expr.Var →
+        let x_36 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_36
+      Expr.Add →
+        let x_37 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_37
+      Expr.Mul →
+        let x_38 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_38
+      Expr.Pow →
+        let x_39 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_39
+      Expr.Ln →
+        let x_40 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_40
+    Expr.Mul →
+      let x_41 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_41
+    Expr.Pow →
+      let x_42 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_42
+    Expr.Ln →
+      let x_43 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_43
+  Expr.Add →
+    let x_44 : obj := proj[0] x_1;
+    let x_45 : obj := proj[1] x_1;
+    case x_2 : obj of
+    Expr.Val →
+      let x_46 : obj := proj[0] x_2;
+      let x_47 : obj := Int.zero;
+      let x_48 : u8 := Int.decEq x_46 x_47;
+      case x_48 : obj of
+      Bool.false →
+        let x_49 : obj := add._main x_2 x_1;
+        ret x_49
+      Bool.true →
+        ret x_1
+    Expr.Var →
+      let x_50 : obj := add._main x_45 x_2;
+      let x_51 : obj := add._main x_44 x_50;
+      ret x_51
+    Expr.Add →
+      let x_52 : obj := proj[0] x_2;
+      let x_53 : obj := proj[1] x_2;
+      case x_52 : obj of
+      Expr.Val →
+        let x_54 : obj := add._main x_1 x_53;
+        let x_55 : obj := add._main x_52 x_54;
+        ret x_55
+      Expr.Var →
+        let x_56 : obj := add._main x_45 x_2;
+        let x_57 : obj := add._main x_44 x_56;
+        ret x_57
+      Expr.Add →
+        let x_58 : obj := add._main x_45 x_2;
+        let x_59 : obj := add._main x_44 x_58;
+        ret x_59
+      Expr.Mul →
+        let x_60 : obj := add._main x_45 x_2;
+        let x_61 : obj := add._main x_44 x_60;
+        ret x_61
+      Expr.Pow →
+        let x_62 : obj := add._main x_45 x_2;
+        let x_63 : obj := add._main x_44 x_62;
+        ret x_63
+      Expr.Ln →
+        let x_64 : obj := add._main x_45 x_2;
+        let x_65 : obj := add._main x_44 x_64;
+        ret x_65
+    Expr.Mul →
+      let x_66 : obj := add._main x_45 x_2;
+      let x_67 : obj := add._main x_44 x_66;
+      ret x_67
+    Expr.Pow →
+      let x_68 : obj := add._main x_45 x_2;
+      let x_69 : obj := add._main x_44 x_68;
+      ret x_69
+    Expr.Ln →
+      let x_70 : obj := add._main x_45 x_2;
+      let x_71 : obj := add._main x_44 x_70;
+      ret x_71
+  Expr.Mul →
+    case x_2 : obj of
+    Expr.Val →
+      let x_72 : obj := proj[0] x_2;
+      let x_73 : obj := Int.zero;
+      let x_74 : u8 := Int.decEq x_72 x_73;
+      case x_74 : obj of
+      Bool.false →
+        let x_75 : obj := add._main x_2 x_1;
+        ret x_75
+      Bool.true →
+        ret x_1
+    Expr.Var →
+      let x_76 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_76
+    Expr.Add →
+      let x_77 : obj := proj[0] x_2;
+      let x_78 : obj := proj[1] x_2;
+      case x_77 : obj of
+      Expr.Val →
+        let x_79 : obj := add._main x_1 x_78;
+        let x_80 : obj := add._main x_77 x_79;
+        ret x_80
+      Expr.Var →
+        let x_81 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_81
+      Expr.Add →
+        let x_82 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_82
+      Expr.Mul →
+        let x_83 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_83
+      Expr.Pow →
+        let x_84 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_84
+      Expr.Ln →
+        let x_85 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_85
+    Expr.Mul →
+      let x_86 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_86
+    Expr.Pow →
+      let x_87 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_87
+    Expr.Ln →
+      let x_88 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_88
+  Expr.Pow →
+    case x_2 : obj of
+    Expr.Val →
+      let x_89 : obj := proj[0] x_2;
+      let x_90 : obj := Int.zero;
+      let x_91 : u8 := Int.decEq x_89 x_90;
+      case x_91 : obj of
+      Bool.false →
+        let x_92 : obj := add._main x_2 x_1;
+        ret x_92
+      Bool.true →
+        ret x_1
+    Expr.Var →
+      let x_93 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_93
+    Expr.Add →
+      let x_94 : obj := proj[0] x_2;
+      let x_95 : obj := proj[1] x_2;
+      case x_94 : obj of
+      Expr.Val →
+        let x_96 : obj := add._main x_1 x_95;
+        let x_97 : obj := add._main x_94 x_96;
+        ret x_97
+      Expr.Var →
+        let x_98 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_98
+      Expr.Add →
+        let x_99 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_99
+      Expr.Mul →
+        let x_100 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_100
+      Expr.Pow →
+        let x_101 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_101
+      Expr.Ln →
+        let x_102 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_102
+    Expr.Mul →
+      let x_103 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_103
+    Expr.Pow →
+      let x_104 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_104
+    Expr.Ln →
+      let x_105 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_105
+  Expr.Ln →
+    case x_2 : obj of
+    Expr.Val →
+      let x_106 : obj := proj[0] x_2;
+      let x_107 : obj := Int.zero;
+      let x_108 : u8 := Int.decEq x_106 x_107;
+      case x_108 : obj of
+      Bool.false →
+        let x_109 : obj := add._main x_2 x_1;
+        ret x_109
+      Bool.true →
+        ret x_1
+    Expr.Var →
+      let x_110 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_110
+    Expr.Add →
+      let x_111 : obj := proj[0] x_2;
+      let x_112 : obj := proj[1] x_2;
+      case x_111 : obj of
+      Expr.Val →
+        let x_113 : obj := add._main x_1 x_112;
+        let x_114 : obj := add._main x_111 x_113;
+        ret x_114
+      Expr.Var →
+        let x_115 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_115
+      Expr.Add →
+        let x_116 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_116
+      Expr.Mul →
+        let x_117 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_117
+      Expr.Pow →
+        let x_118 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_118
+      Expr.Ln →
+        let x_119 : obj := ctor_2[Expr.Add] x_1 x_2;
+        ret x_119
+    Expr.Mul →
+      let x_120 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_120
+    Expr.Pow →
+      let x_121 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_121
+    Expr.Ln →
+      let x_122 : obj := ctor_2[Expr.Add] x_1 x_2;
+      ret x_122
+
+def add (x_1 : obj) (x_2 : obj) : obj :=
+  let x_3 : obj := add._main x_1 x_2;
+  ret x_3
+
+def mul._main._closed_1 : obj :=
+  let x_1 : obj := Int.zero;
+  let x_2 : obj := ctor_0[Expr.Val] x_1;
+  ret x_2
+def mul._main (x_1 : obj) (x_2 : obj) : obj :=
+  case x_1 : obj of
+  Expr.Val →
+    let x_3 : obj := proj[0] x_1;
+    let x_4 : obj := Int.zero;
+    let x_5 : u8 := Int.decEq x_3 x_4;
+    case x_5 : obj of
+    Bool.false →
+      let x_6 : obj := Int.one;
+      let x_7 : u8 := Int.decEq x_3 x_6;
+      case x_7 : obj of
+      Bool.false →
+        case x_2 : obj of
+        Expr.Val →
+          let x_8 : obj := proj[0] x_2;
+          let x_9 : obj := Int.mul x_3 x_8;
+          let x_10 : obj := ctor_0[Expr.Val] x_9;
+          ret x_10
+        Expr.Var →
+          let x_11 : obj := ctor_3[Expr.Mul] x_1 x_2;
+          ret x_11
+        Expr.Add →
+          let x_12 : obj := ctor_3[Expr.Mul] x_1 x_2;
+          ret x_12
+        Expr.Mul →
+          let x_13 : obj := proj[0] x_2;
+          let x_14 : obj := proj[1] x_2;
+          case x_13 : obj of
+          Expr.Val →
+            let x_15 : obj := proj[0] x_13;
+            let x_16 : obj := Int.mul x_3 x_15;
+            let x_17 : obj := ctor_0[Expr.Val] x_16;
+            let x_18 : obj := mul._main x_17 x_14;
+            ret x_18
+          Expr.Var →
+            let x_19 : obj := ctor_3[Expr.Mul] x_1 x_2;
+            ret x_19
+          Expr.Add →
+            let x_20 : obj := ctor_3[Expr.Mul] x_1 x_2;
+            ret x_20
+          Expr.Mul →
+            let x_21 : obj := ctor_3[Expr.Mul] x_1 x_2;
+            ret x_21
+          Expr.Pow →
+            let x_22 : obj := ctor_3[Expr.Mul] x_1 x_2;
+            ret x_22
+          Expr.Ln →
+            let x_23 : obj := ctor_3[Expr.Mul] x_1 x_2;
+            ret x_23
+        Expr.Pow →
+          let x_24 : obj := ctor_3[Expr.Mul] x_1 x_2;
+          ret x_24
+        Expr.Ln →
+          let x_25 : obj := ctor_3[Expr.Mul] x_1 x_2;
+          ret x_25
+      Bool.true →
+        case x_2 : obj of
+        Expr.Val →
+          let x_26 : obj := proj[0] x_2;
+          let x_27 : obj := Int.mul x_6 x_26;
+          let x_28 : obj := ctor_0[Expr.Val] x_27;
+          ret x_28
+        Expr.Var →
+          ret x_2
+        Expr.Add →
+          ret x_2
+        Expr.Mul →
+          ret x_2
+        Expr.Pow →
+          ret x_2
+        Expr.Ln →
+          ret x_2
+    Bool.true →
+      case x_2 : obj of
+      Expr.Val →
+        let x_29 : obj := proj[0] x_2;
+        let x_30 : obj := Int.mul x_4 x_29;
+        let x_31 : obj := ctor_0[Expr.Val] x_30;
+        ret x_31
+      Expr.Var →
+        let x_32 : obj := mul._main._closed_1;
+        ret x_32
+      Expr.Add →
+        let x_33 : obj := mul._main._closed_1;
+        ret x_33
+      Expr.Mul →
+        let x_34 : obj := mul._main._closed_1;
+        ret x_34
+      Expr.Pow →
+        let x_35 : obj := mul._main._closed_1;
+        ret x_35
+      Expr.Ln →
+        let x_36 : obj := mul._main._closed_1;
+        ret x_36
+  Expr.Var →
+    case x_2 : obj of
+    Expr.Val →
+      let x_37 : obj := proj[0] x_2;
+      let x_38 : obj := Int.zero;
+      let x_39 : u8 := Int.decEq x_37 x_38;
+      case x_39 : obj of
+      Bool.false →
+        let x_40 : obj := Int.one;
+        let x_41 : u8 := Int.decEq x_37 x_40;
+        case x_41 : obj of
+        Bool.false →
+          let x_42 : obj := mul._main x_2 x_1;
+          ret x_42
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_43 : obj := mul._main._closed_1;
+        ret x_43
+    Expr.Var →
+      let x_44 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_44
+    Expr.Add →
+      let x_45 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_45
+    Expr.Mul →
+      let x_46 : obj := proj[0] x_2;
+      let x_47 : obj := proj[1] x_2;
+      case x_46 : obj of
+      Expr.Val →
+        let x_48 : obj := mul._main x_1 x_47;
+        let x_49 : obj := mul._main x_46 x_48;
+        ret x_49
+      Expr.Var →
+        let x_50 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_50
+      Expr.Add →
+        let x_51 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_51
+      Expr.Mul →
+        let x_52 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_52
+      Expr.Pow →
+        let x_53 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_53
+      Expr.Ln →
+        let x_54 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_54
+    Expr.Pow →
+      let x_55 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_55
+    Expr.Ln →
+      let x_56 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_56
+  Expr.Add →
+    case x_2 : obj of
+    Expr.Val →
+      let x_57 : obj := proj[0] x_2;
+      let x_58 : obj := Int.zero;
+      let x_59 : u8 := Int.decEq x_57 x_58;
+      case x_59 : obj of
+      Bool.false →
+        let x_60 : obj := Int.one;
+        let x_61 : u8 := Int.decEq x_57 x_60;
+        case x_61 : obj of
+        Bool.false →
+          let x_62 : obj := mul._main x_2 x_1;
+          ret x_62
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_63 : obj := mul._main._closed_1;
+        ret x_63
+    Expr.Var →
+      let x_64 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_64
+    Expr.Add →
+      let x_65 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_65
+    Expr.Mul →
+      let x_66 : obj := proj[0] x_2;
+      let x_67 : obj := proj[1] x_2;
+      case x_66 : obj of
+      Expr.Val →
+        let x_68 : obj := mul._main x_1 x_67;
+        let x_69 : obj := mul._main x_66 x_68;
+        ret x_69
+      Expr.Var →
+        let x_70 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_70
+      Expr.Add →
+        let x_71 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_71
+      Expr.Mul →
+        let x_72 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_72
+      Expr.Pow →
+        let x_73 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_73
+      Expr.Ln →
+        let x_74 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_74
+    Expr.Pow →
+      let x_75 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_75
+    Expr.Ln →
+      let x_76 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_76
+  Expr.Mul →
+    let x_77 : obj := proj[0] x_1;
+    let x_78 : obj := proj[1] x_1;
+    case x_2 : obj of
+    Expr.Val →
+      let x_79 : obj := proj[0] x_2;
+      let x_80 : obj := Int.zero;
+      let x_81 : u8 := Int.decEq x_79 x_80;
+      case x_81 : obj of
+      Bool.false →
+        let x_82 : obj := Int.one;
+        let x_83 : u8 := Int.decEq x_79 x_82;
+        case x_83 : obj of
+        Bool.false →
+          let x_84 : obj := mul._main x_2 x_1;
+          ret x_84
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_85 : obj := mul._main._closed_1;
+        ret x_85
+    Expr.Var →
+      let x_86 : obj := mul._main x_78 x_2;
+      let x_87 : obj := mul._main x_77 x_86;
+      ret x_87
+    Expr.Add →
+      let x_88 : obj := mul._main x_78 x_2;
+      let x_89 : obj := mul._main x_77 x_88;
+      ret x_89
+    Expr.Mul →
+      let x_90 : obj := proj[0] x_2;
+      let x_91 : obj := proj[1] x_2;
+      case x_90 : obj of
+      Expr.Val →
+        let x_92 : obj := mul._main x_1 x_91;
+        let x_93 : obj := mul._main x_90 x_92;
+        ret x_93
+      Expr.Var →
+        let x_94 : obj := mul._main x_78 x_2;
+        let x_95 : obj := mul._main x_77 x_94;
+        ret x_95
+      Expr.Add →
+        let x_96 : obj := mul._main x_78 x_2;
+        let x_97 : obj := mul._main x_77 x_96;
+        ret x_97
+      Expr.Mul →
+        let x_98 : obj := mul._main x_78 x_2;
+        let x_99 : obj := mul._main x_77 x_98;
+        ret x_99
+      Expr.Pow →
+        let x_100 : obj := mul._main x_78 x_2;
+        let x_101 : obj := mul._main x_77 x_100;
+        ret x_101
+      Expr.Ln →
+        let x_102 : obj := mul._main x_78 x_2;
+        let x_103 : obj := mul._main x_77 x_102;
+        ret x_103
+    Expr.Pow →
+      let x_104 : obj := mul._main x_78 x_2;
+      let x_105 : obj := mul._main x_77 x_104;
+      ret x_105
+    Expr.Ln →
+      let x_106 : obj := mul._main x_78 x_2;
+      let x_107 : obj := mul._main x_77 x_106;
+      ret x_107
+  Expr.Pow →
+    case x_2 : obj of
+    Expr.Val →
+      let x_108 : obj := proj[0] x_2;
+      let x_109 : obj := Int.zero;
+      let x_110 : u8 := Int.decEq x_108 x_109;
+      case x_110 : obj of
+      Bool.false →
+        let x_111 : obj := Int.one;
+        let x_112 : u8 := Int.decEq x_108 x_111;
+        case x_112 : obj of
+        Bool.false →
+          let x_113 : obj := mul._main x_2 x_1;
+          ret x_113
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_114 : obj := mul._main._closed_1;
+        ret x_114
+    Expr.Var →
+      let x_115 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_115
+    Expr.Add →
+      let x_116 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_116
+    Expr.Mul →
+      let x_117 : obj := proj[0] x_2;
+      let x_118 : obj := proj[1] x_2;
+      case x_117 : obj of
+      Expr.Val →
+        let x_119 : obj := mul._main x_1 x_118;
+        let x_120 : obj := mul._main x_117 x_119;
+        ret x_120
+      Expr.Var →
+        let x_121 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_121
+      Expr.Add →
+        let x_122 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_122
+      Expr.Mul →
+        let x_123 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_123
+      Expr.Pow →
+        let x_124 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_124
+      Expr.Ln →
+        let x_125 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_125
+    Expr.Pow →
+      let x_126 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_126
+    Expr.Ln →
+      let x_127 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_127
+  Expr.Ln →
+    case x_2 : obj of
+    Expr.Val →
+      let x_128 : obj := proj[0] x_2;
+      let x_129 : obj := Int.zero;
+      let x_130 : u8 := Int.decEq x_128 x_129;
+      case x_130 : obj of
+      Bool.false →
+        let x_131 : obj := Int.one;
+        let x_132 : u8 := Int.decEq x_128 x_131;
+        case x_132 : obj of
+        Bool.false →
+          let x_133 : obj := mul._main x_2 x_1;
+          ret x_133
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_134 : obj := mul._main._closed_1;
+        ret x_134
+    Expr.Var →
+      let x_135 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_135
+    Expr.Add →
+      let x_136 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_136
+    Expr.Mul →
+      let x_137 : obj := proj[0] x_2;
+      let x_138 : obj := proj[1] x_2;
+      case x_137 : obj of
+      Expr.Val →
+        let x_139 : obj := mul._main x_1 x_138;
+        let x_140 : obj := mul._main x_137 x_139;
+        ret x_140
+      Expr.Var →
+        let x_141 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_141
+      Expr.Add →
+        let x_142 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_142
+      Expr.Mul →
+        let x_143 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_143
+      Expr.Pow →
+        let x_144 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_144
+      Expr.Ln →
+        let x_145 : obj := ctor_3[Expr.Mul] x_1 x_2;
+        ret x_145
+    Expr.Pow →
+      let x_146 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_146
+    Expr.Ln →
+      let x_147 : obj := ctor_3[Expr.Mul] x_1 x_2;
+      ret x_147
+
+def mul (x_1 : obj) (x_2 : obj) : obj :=
+  let x_3 : obj := mul._main x_1 x_2;
+  ret x_3
+
+def pow._closed_1 : obj :=
+  let x_1 : obj := Int.one;
+  let x_2 : obj := ctor_0[Expr.Val] x_1;
+  ret x_2
+def pow (x_1 : obj) (x_2 : obj) : obj :=
+  case x_1 : obj of
+  Expr.Val →
+    let x_3 : obj := proj[0] x_1;
+    let x_4 : obj := Int.zero;
+    let x_5 : u8 := Int.decEq x_3 x_4;
+    case x_5 : obj of
+    Bool.false →
+      case x_2 : obj of
+      Expr.Val →
+        let x_6 : obj := proj[0] x_2;
+        let x_7 : obj := pown._main x_3 x_6;
+        let x_8 : obj := ctor_0[Expr.Val] x_7;
+        ret x_8
+      Expr.Var →
+        let x_9 : obj := ctor_4[Expr.Pow] x_1 x_2;
+        ret x_9
+      Expr.Add →
+        let x_10 : obj := ctor_4[Expr.Pow] x_1 x_2;
+        ret x_10
+      Expr.Mul →
+        let x_11 : obj := ctor_4[Expr.Pow] x_1 x_2;
+        ret x_11
+      Expr.Pow →
+        let x_12 : obj := ctor_4[Expr.Pow] x_1 x_2;
+        ret x_12
+      Expr.Ln →
+        let x_13 : obj := ctor_4[Expr.Pow] x_1 x_2;
+        ret x_13
+    Bool.true →
+      case x_2 : obj of
+      Expr.Val →
+        let x_14 : obj := proj[0] x_2;
+        let x_15 : obj := pown._main x_4 x_14;
+        let x_16 : obj := ctor_0[Expr.Val] x_15;
+        ret x_16
+      Expr.Var →
+        let x_17 : obj := mul._main._closed_1;
+        ret x_17
+      Expr.Add →
+        let x_18 : obj := mul._main._closed_1;
+        ret x_18
+      Expr.Mul →
+        let x_19 : obj := mul._main._closed_1;
+        ret x_19
+      Expr.Pow →
+        let x_20 : obj := mul._main._closed_1;
+        ret x_20
+      Expr.Ln →
+        let x_21 : obj := mul._main._closed_1;
+        ret x_21
+  Expr.Var →
+    case x_2 : obj of
+    Expr.Val →
+      let x_22 : obj := proj[0] x_2;
+      let x_23 : obj := Int.zero;
+      let x_24 : u8 := Int.decEq x_22 x_23;
+      case x_24 : obj of
+      Bool.false →
+        let x_25 : obj := Int.one;
+        let x_26 : u8 := Int.decEq x_22 x_25;
+        case x_26 : obj of
+        Bool.false →
+          let x_27 : obj := ctor_4[Expr.Pow] x_1 x_2;
+          ret x_27
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_28 : obj := pow._closed_1;
+        ret x_28
+    Expr.Var →
+      let x_29 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_29
+    Expr.Add →
+      let x_30 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_30
+    Expr.Mul →
+      let x_31 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_31
+    Expr.Pow →
+      let x_32 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_32
+    Expr.Ln →
+      let x_33 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_33
+  Expr.Add →
+    case x_2 : obj of
+    Expr.Val →
+      let x_34 : obj := proj[0] x_2;
+      let x_35 : obj := Int.zero;
+      let x_36 : u8 := Int.decEq x_34 x_35;
+      case x_36 : obj of
+      Bool.false →
+        let x_37 : obj := Int.one;
+        let x_38 : u8 := Int.decEq x_34 x_37;
+        case x_38 : obj of
+        Bool.false →
+          let x_39 : obj := ctor_4[Expr.Pow] x_1 x_2;
+          ret x_39
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_40 : obj := pow._closed_1;
+        ret x_40
+    Expr.Var →
+      let x_41 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_41
+    Expr.Add →
+      let x_42 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_42
+    Expr.Mul →
+      let x_43 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_43
+    Expr.Pow →
+      let x_44 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_44
+    Expr.Ln →
+      let x_45 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_45
+  Expr.Mul →
+    case x_2 : obj of
+    Expr.Val →
+      let x_46 : obj := proj[0] x_2;
+      let x_47 : obj := Int.zero;
+      let x_48 : u8 := Int.decEq x_46 x_47;
+      case x_48 : obj of
+      Bool.false →
+        let x_49 : obj := Int.one;
+        let x_50 : u8 := Int.decEq x_46 x_49;
+        case x_50 : obj of
+        Bool.false →
+          let x_51 : obj := ctor_4[Expr.Pow] x_1 x_2;
+          ret x_51
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_52 : obj := pow._closed_1;
+        ret x_52
+    Expr.Var →
+      let x_53 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_53
+    Expr.Add →
+      let x_54 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_54
+    Expr.Mul →
+      let x_55 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_55
+    Expr.Pow →
+      let x_56 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_56
+    Expr.Ln →
+      let x_57 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_57
+  Expr.Pow →
+    case x_2 : obj of
+    Expr.Val →
+      let x_58 : obj := proj[0] x_2;
+      let x_59 : obj := Int.zero;
+      let x_60 : u8 := Int.decEq x_58 x_59;
+      case x_60 : obj of
+      Bool.false →
+        let x_61 : obj := Int.one;
+        let x_62 : u8 := Int.decEq x_58 x_61;
+        case x_62 : obj of
+        Bool.false →
+          let x_63 : obj := ctor_4[Expr.Pow] x_1 x_2;
+          ret x_63
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_64 : obj := pow._closed_1;
+        ret x_64
+    Expr.Var →
+      let x_65 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_65
+    Expr.Add →
+      let x_66 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_66
+    Expr.Mul →
+      let x_67 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_67
+    Expr.Pow →
+      let x_68 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_68
+    Expr.Ln →
+      let x_69 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_69
+  Expr.Ln →
+    case x_2 : obj of
+    Expr.Val →
+      let x_70 : obj := proj[0] x_2;
+      let x_71 : obj := Int.zero;
+      let x_72 : u8 := Int.decEq x_70 x_71;
+      case x_72 : obj of
+      Bool.false →
+        let x_73 : obj := Int.one;
+        let x_74 : u8 := Int.decEq x_70 x_73;
+        case x_74 : obj of
+        Bool.false →
+          let x_75 : obj := ctor_4[Expr.Pow] x_1 x_2;
+          ret x_75
+        Bool.true →
+          ret x_1
+      Bool.true →
+        let x_76 : obj := pow._closed_1;
+        ret x_76
+    Expr.Var →
+      let x_77 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_77
+    Expr.Add →
+      let x_78 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_78
+    Expr.Mul →
+      let x_79 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_79
+    Expr.Pow →
+      let x_80 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_80
+    Expr.Ln →
+      let x_81 : obj := ctor_4[Expr.Pow] x_1 x_2;
+      ret x_81
+
+def ln (x_1 : obj) : obj :=
+  case x_1 : obj of
+  Expr.Val →
+    let x_2 : obj := proj[0] x_1;
+    let x_3 : obj := Int.one;
+    let x_4 : u8 := Int.decEq x_2 x_3;
+    case x_4 : obj of
+    Bool.false →
+      let x_5 : obj := ctor_5[Expr.Ln] x_1;
+      ret x_5
+    Bool.true →
+      let x_6 : obj := mul._main._closed_1;
+      ret x_6
+  Expr.Var →
+    let x_7 : obj := ctor_5[Expr.Ln] x_1;
+    ret x_7
+  Expr.Add →
+    let x_8 : obj := ctor_5[Expr.Ln] x_1;
+    ret x_8
+  Expr.Mul →
+    let x_9 : obj := ctor_5[Expr.Ln] x_1;
+    ret x_9
+  Expr.Pow →
+    let x_10 : obj := ctor_5[Expr.Ln] x_1;
+    ret x_10
+  Expr.Ln →
+    let x_11 : obj := ctor_5[Expr.Ln] x_1;
+    ret x_11
+
+def d._main._closed_1 : obj :=
+  let x_1 : obj := Int.one;
+  let x_2 : obj := Int.neg x_1;
+  ret x_2
+def d._main._closed_2 : obj :=
+  let x_1 : obj := d._main._closed_1;
+  let x_2 : obj := ctor_0[Expr.Val] x_1;
+  ret x_2
+def d._main (x_1 : obj) (x_2 : obj) : obj :=
+  case x_2 : obj of
+  Expr.Val →
+    let x_3 : obj := mul._main._closed_1;
+    ret x_3
+  Expr.Var →
+    let x_4 : obj := proj[0] x_2;
+    let x_5 : u8 := String.decEq x_1 x_4;
+    case x_5 : obj of
+    Bool.false →
+      let x_6 : obj := mul._main._closed_1;
+      ret x_6
+    Bool.true →
+      let x_7 : obj := pow._closed_1;
+      ret x_7
+  Expr.Add →
+    let x_8 : obj := proj[0] x_2;
+    let x_9 : obj := proj[1] x_2;
+    let x_10 : obj := d._main x_1 x_8;
+    let x_11 : obj := d._main x_1 x_9;
+    let x_12 : obj := add._main x_10 x_11;
+    ret x_12
+  Expr.Mul →
+    let x_13 : obj := proj[0] x_2;
+    let x_14 : obj := proj[1] x_2;
+    let x_15 : obj := d._main x_1 x_14;
+    let x_16 : obj := mul._main x_13 x_15;
+    let x_17 : obj := d._main x_1 x_13;
+    let x_18 : obj := mul._main x_14 x_17;
+    let x_19 : obj := add._main x_16 x_18;
+    ret x_19
+  Expr.Pow →
+    let x_20 : obj := proj[0] x_2;
+    let x_21 : obj := proj[1] x_2;
+    let x_22 : obj := pow x_20 x_21;
+    let x_23 : obj := d._main x_1 x_20;
+    let x_24 : obj := mul._main x_21 x_23;
+    let x_25 : obj := d._main._closed_2;
+    let x_26 : obj := pow x_20 x_25;
+    let x_27 : obj := mul._main x_24 x_26;
+    let x_28 : obj := ln x_20;
+    let x_29 : obj := d._main x_1 x_21;
+    let x_30 : obj := mul._main x_28 x_29;
+    let x_31 : obj := add._main x_27 x_30;
+    let x_32 : obj := mul._main x_22 x_31;
+    ret x_32
+  Expr.Ln →
+    let x_33 : obj := proj[0] x_2;
+    let x_34 : obj := d._main x_1 x_33;
+    let x_35 : obj := d._main._closed_2;
+    let x_36 : obj := pow x_33 x_35;
+    let x_37 : obj := mul._main x_34 x_36;
+    ret x_37
+
+def d (x_1 : obj) (x_2 : obj) : obj :=
+  let x_3 : obj := d._main x_1 x_2;
+  ret x_3
+
+def count._main (x_1 : obj) : u32 :=
+  case x_1 : obj of
+  Expr.Val →
+    let x_2 : u32 := 1;
+    ret x_2
+  Expr.Var →
+    let x_3 : u32 := 1;
+    ret x_3
+  Expr.Add →
+    let x_4 : obj := proj[0] x_1;
+    let x_5 : obj := proj[1] x_1;
+    let x_6 : u32 := count._main x_4;
+    let x_7 : u32 := count._main x_5;
+    let x_8 : u32 := UInt32.add x_6 x_7;
+    ret x_8
+  Expr.Mul →
+    let x_9 : obj := proj[0] x_1;
+    let x_10 : obj := proj[1] x_1;
+    let x_11 : u32 := count._main x_9;
+    let x_12 : u32 := count._main x_10;
+    let x_13 : u32 := UInt32.add x_11 x_12;
+    ret x_13
+  Expr.Pow →
+    let x_14 : obj := proj[0] x_1;
+    let x_15 : obj := proj[1] x_1;
+    let x_16 : u32 := count._main x_14;
+    let x_17 : u32 := count._main x_15;
+    let x_18 : u32 := UInt32.add x_16 x_17;
+    ret x_18
+  Expr.Ln →
+    let x_19 : obj := proj[0] x_1;
+    let x_20 : u32 := count._main x_19;
+    ret x_20
+
+def count (x_1 : obj) : u32 :=
+  let x_2 : u32 := count._main x_1;
+  ret x_2
+
+def Expr.toString._main._closed_1 : obj :=
+  let x_1 : obj := " + ";
+  ret x_1
+def Expr.toString._main._closed_2 : obj :=
+  let x_1 : obj := " * ";
+  ret x_1
+def Expr.toString._main._closed_3 : obj :=
+  let x_1 : obj := " ^ ";
+  ret x_1
+def Expr.toString._main._closed_4 : obj :=
+  let x_1 : obj := "ln(";
+  ret x_1
+def Expr.toString._main (x_1 : obj) : obj :=
+  case x_1 : obj of
+  Expr.Val →
+    let x_2 : obj := proj[0] x_1;
+    let x_3 : obj := Int.repr x_2;
+    ret x_3
+  Expr.Var →
+    let x_4 : obj := proj[0] x_1;
+    ret x_4
+  Expr.Add →
+    let x_5 : obj := proj[0] x_1;
+    let x_6 : obj := proj[1] x_1;
+    let x_7 : obj := Expr.toString._main x_5;
+    let x_8 : obj := Prod.HasRepr._rarg._closed_1;
+    let x_9 : obj := String.append x_8 x_7;
+    let x_10 : obj := Expr.toString._main._closed_1;
+    let x_11 : obj := String.append x_9 x_10;
+    let x_12 : obj := Expr.toString._main x_6;
+    let x_13 : obj := String.append x_11 x_12;
+    let x_14 : obj := Option.HasRepr._rarg._closed_3;
+    let x_15 : obj := String.append x_13 x_14;
+    ret x_15
+  Expr.Mul →
+    let x_16 : obj := proj[0] x_1;
+    let x_17 : obj := proj[1] x_1;
+    let x_18 : obj := Expr.toString._main x_16;
+    let x_19 : obj := Prod.HasRepr._rarg._closed_1;
+    let x_20 : obj := String.append x_19 x_18;
+    let x_21 : obj := Expr.toString._main._closed_2;
+    let x_22 : obj := String.append x_20 x_21;
+    let x_23 : obj := Expr.toString._main x_17;
+    let x_24 : obj := String.append x_22 x_23;
+    let x_25 : obj := Option.HasRepr._rarg._closed_3;
+    let x_26 : obj := String.append x_24 x_25;
+    ret x_26
+  Expr.Pow →
+    let x_27 : obj := proj[0] x_1;
+    let x_28 : obj := proj[1] x_1;
+    let x_29 : obj := Expr.toString._main x_27;
+    let x_30 : obj := Prod.HasRepr._rarg._closed_1;
+    let x_31 : obj := String.append x_30 x_29;
+    let x_32 : obj := Expr.toString._main._closed_3;
+    let x_33 : obj := String.append x_31 x_32;
+    let x_34 : obj := Expr.toString._main x_28;
+    let x_35 : obj := String.append x_33 x_34;
+    let x_36 : obj := Option.HasRepr._rarg._closed_3;
+    let x_37 : obj := String.append x_35 x_36;
+    ret x_37
+  Expr.Ln →
+    let x_38 : obj := proj[0] x_1;
+    let x_39 : obj := Expr.toString._main x_38;
+    let x_40 : obj := Expr.toString._main._closed_4;
+    let x_41 : obj := String.append x_40 x_39;
+    let x_42 : obj := Option.HasRepr._rarg._closed_3;
+    let x_43 : obj := String.append x_41 x_42;
+    ret x_43
+
+def Expr.toString (x_1 : obj) : obj :=
+  let x_2 : obj := Expr.toString._main x_1;
+  ret x_2
+
+def Expr.HasToString._closed_1 : obj :=
+  let x_1 : obj := pap Expr.toString;
+  ret x_1
+def Expr.HasToString : obj :=
+  let x_1 : obj := Expr.HasToString._closed_1;
+  ret x_1
+
+def nestAux._main (x_1 : obj) (x_2 : obj) (x_3 : obj) (x_4 : obj) (x_5 : obj) : obj :=
+  let x_6 : obj := 0;
+  let x_7 : u8 := Nat.decEq x_3 x_6;
+  case x_7 : obj of
+  Bool.false →
+    let x_8 : obj := 1;
+    let x_9 : obj := Nat.sub x_3 x_8;
+    let x_10 : obj := Nat.add x_9 x_8;
+    let x_11 : obj := Nat.sub x_1 x_10;
+    let x_12 : obj := app x_2 x_11 x_4 x_5;
+    case x_12 : obj of
+    EStateM.Result.ok →
+      let x_13 : obj := proj[0] x_12;
+      let x_14 : obj := proj[1] x_12;
+      let x_15 : obj := nestAux._main x_1 x_2 x_9 x_13 x_14;
+      ret x_15
+    EStateM.Result.error →
+      let x_16 : obj := proj[0] x_12;
+      let x_17 : obj := proj[1] x_12;
+      let x_18 : obj := ctor_1[EStateM.Result.error] x_16 x_17;
+      ret x_18
+  Bool.true →
+    let x_19 : obj := ctor_0[EStateM.Result.ok] x_4 x_5;
+    ret x_19
+
+def nestAux (x_1 : obj) (x_2 : obj) (x_3 : obj) (x_4 : obj) (x_5 : obj) : obj :=
+  let x_6 : obj := nestAux._main x_1 x_2 x_3 x_4 x_5;
+  ret x_6
+
+def nest (x_1 : obj) (x_2 : obj) (x_3 : obj) (x_4 : obj) : obj :=
+  let x_5 : obj := nestAux._main x_2 x_1 x_2 x_3 x_4;
+  ret x_5
+
+def deriv._closed_1 : obj :=
+  let x_1 : obj := "x";
+  ret x_1
+def deriv._closed_2 : obj :=
+  let x_1 : obj := " count: ";
+  ret x_1
+def deriv (x_1 : obj) (x_2 : obj) (x_3 : obj) : obj :=
+  let x_4 : obj := deriv._closed_1;
+  let x_5 : obj := d._main x_4 x_2;
+  let x_6 : obj := 1;
+  let x_7 : obj := Nat.add x_1 x_6;
+  let x_8 : obj := Nat.repr x_7;
+  let x_9 : obj := deriv._closed_2;
+  let x_10 : obj := String.append x_8 x_9;
+  let x_11 : u32 := count._main x_5;
+  let x_12 : obj := UInt32.toNat x_11;
+  let x_13 : obj := Nat.repr x_12;
+  let x_14 : obj := String.append x_10 x_13;
+  let x_15 : obj := IO.println._at.Lean.HasRepr.HasEval._spec_1 x_14 x_3;
+  case x_15 : obj of
+  EStateM.Result.ok →
+    let x_16 : obj := proj[1] x_15;
+    let x_17 : obj := ctor_0[EStateM.Result.ok] x_5 x_16;
+    ret x_17
+  EStateM.Result.error →
+    let x_18 : obj := proj[0] x_15;
+    let x_19 : obj := proj[1] x_15;
+    let x_20 : obj := ctor_1[EStateM.Result.error] x_18 x_19;
+    ret x_20
+
+def main._closed_1 : obj :=
+  let x_1 : obj := deriv._closed_1;
+  let x_2 : obj := ctor_1[Expr.Var] x_1;
+  ret x_2
+def main._closed_2 : obj :=
+  let x_1 : obj := main._closed_1;
+  let x_2 : obj := pow x_1 x_1;
+  ret x_2
+def main._closed_3 : obj :=
+  let x_1 : obj := pap deriv;
+  ret x_1
+def main (x_1 : obj) (x_2 : obj) : obj :=
+  case x_1 : obj of
+  List.nil →
+    let x_3 : u32 := 1;
+    let x_4 : obj := ctor_0[EStateM.Result.ok] x_3 x_2;
+    ret x_4
+  List.cons →
+    let x_5 : obj := proj[0] x_1;
+    let x_6 : obj := proj[1] x_1;
+    case x_6 : obj of
+    List.nil →
+      let x_7 : obj := String.toNat x_5;
+      let x_8 : obj := main._closed_3;
+      let x_9 : obj := main._closed_2;
+      let x_10 : obj := nestAux._main x_7 x_8 x_7 x_9 x_2;
+      case x_10 : obj of
+      EStateM.Result.ok →
+        let x_11 : obj := proj[1] x_10;
+        let x_12 : u32 := 0;
+        let x_13 : obj := ctor_0[EStateM.Result.ok] x_12 x_11;
+        ret x_13
+      EStateM.Result.error →
+        let x_14 : obj := proj[0] x_10;
+        let x_15 : obj := proj[1] x_10;
+        let x_16 : obj := ctor_1[EStateM.Result.error] x_14 x_15;
+        ret x_16
+    List.cons →
+      let x_17 : u32 := 1;
+      let x_18 : obj := ctor_0[EStateM.Result.ok] x_17 x_2;
+      ret x_18
