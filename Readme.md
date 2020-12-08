@@ -6,7 +6,7 @@
 
 ## Build / Commands
 
-###build
+### build
 ```export BUILD_DIR=/mnt/c/Users/path-to-llvm
   
   cmake  .. -DMLIR_DIR=$BUILD_DIR/lib/cmake/mlir \
@@ -14,12 +14,12 @@
 
 cmake --build .
 ```
-###to view tblgen (from build)
+### to view tblgen (from build)
 ```
 $BUILD_DIR/bin/mlir-tblgen -gen-op-defs ../include/lambdapure/Ops.td -I $BUILD_DIR/../mlir/include/
 
 ```
-###lambdapure generation
+### lambdapure generation
 
 
 ```
