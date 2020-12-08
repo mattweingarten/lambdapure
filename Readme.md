@@ -5,10 +5,11 @@
 ## Build / Commands
 
 ### build
-```export BUILD_DIR=/mnt/c/Users/path-to-llvm
+```
+export BUILD_DIR=/mnt/c/Users/path-to-llvm
   
-  cmake  .. -DMLIR_DIR=$BUILD_DIR/lib/cmake/mlir \
-  -DLLVM_EXTERNAL_LIT=$BUILD_DIR/bin/llvm-lit \
+cmake  .. -DMLIR_DIR=$BUILD_DIR/lib/cmake/mlir \
+-DLLVM_EXTERNAL_LIT=$BUILD_DIR/bin/llvm-lit \
 
 cmake --build .
 ```
