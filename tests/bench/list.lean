@@ -14,8 +14,11 @@ def map : (Nat -> Nat) -> L -> L
 | f, Cons n l => Cons (f n) (map f l)
 
 
+def add_one (x:Nat) := x + 1
 
-def add_one (x:Nat) :Nat := x + 1
+def map_with_one : (Nat -> Nat -> Nat) -> L -> L
+| f,Nil => Nil
+| f,Cons n l => map (f 1) (Cons n l)
 
 partial def make' : Nat -> Nat -> L
 | n,d =>
@@ -28,8 +31,7 @@ def sum : L -> Nat
 | Cons x l => x + (sum l)
 | Nil =>  0
 
+
 unsafe def main : List String → IO UInt32
-| _ => do
-  let result := sum(map add_one (make 10000000));
-  IO.println(result);
-  pure 0
+| _ =>
+pure 0

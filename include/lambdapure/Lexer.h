@@ -28,6 +28,7 @@ enum Token : int{
   tok_app = -6, //app
   tok_ctor = -7, //ctor
   tok_proj = -8, //proj
+  tok_pap = -9,
   //....
   //values
   tok_id = -100, //identifier
@@ -106,6 +107,8 @@ private:
         return tok_proj;
       if(identifierStr.find("ctor_") != std::string::npos)
         return tok_ctor;
+      if(identifierStr == "pap")
+        return tok_pap;
 
       return tok_id;
     }

@@ -1,5 +1,5 @@
-
-
+# Github for bachelor thesis
+## A single-static-assignment intermediate representation for a pure functional language
 
 
 

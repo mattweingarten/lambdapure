@@ -51,6 +51,15 @@ void CallOp::build(mlir::OpBuilder &builder,mlir::OperationState &state, llvm::S
 }
 
 
+void PapOp::build(mlir::OpBuilder &builder,mlir::OperationState &state, llvm::StringRef fName,
+                  ArrayRef<Value> args)
+ {
+  state.addAttribute("callee",builder.getSymbolRefAttr(fName));
+  state.addOperands(args);
+  state.addTypes(ObjectType::get(builder.getContext()));
+  // state.addTypes(ty);
+ }
+
 void ConstructorOp::build(mlir::OpBuilder &builder,mlir::OperationState &state,
   int tag,ArrayRef<Value> operands, mlir::Type ty){
     state.addAttribute("tag",builder.getI64IntegerAttr(tag));
@@ -66,20 +75,8 @@ void ProjectionOp::build(mlir::OpBuilder &builder, mlir::OperationState &state,
  }
 
 
- void TagCheckOp::build(mlir::OpBuilder &builder, mlir::OperationState &state,
-                            int branch, mlir::Value operand){
-   state.addAttribute("branch",builder.getI64IntegerAttr(branch));
-   state.addOperands({operand});
-   state.addTypes(builder.getIntegerType(1));
-  }
 
-  // void ReuseAllocCtorOp::build(mlir::OpBuilder &builder, mlir::OperationState &state,
-  //                            int tag, int size,mlir::Value object){
-  //   state.addAttribute("tag",builder.getI64IntegerAttr(tag));
-  //   state.addAttribute("size",builder.getI64IntegerAttr(size));
-  //   state.addOperands({object});
-  //   state.addTypes(ObjectType::get(builder.getContext()));
-  //  }
+
 
   void ReuseConstructorOp::build(mlir::OpBuilder &builder,mlir::OperationState &state,
                                  int tag,ArrayRef<Value> operands){
@@ -89,12 +86,7 @@ void ProjectionOp::build(mlir::OpBuilder &builder, mlir::OperationState &state,
     state.addTypes(ObjectType::get(builder.getContext()));
   }
 
-  void ExclCheckOp::build(mlir::OpBuilder &builder,mlir::OperationState &state,
-                                 mlir::Value operand){
-    state.addOperands({operand});
 
-    state.addTypes(builder.getIntegerType(1));
-  }
 
 
 #define GET_OP_CLASSES

@@ -100,6 +100,7 @@ int main(int argc, char **argv){
   }
   if(dumpAST){
     ast -> print();
+    return 0;
   }
   mlir::registerAllDialects();
   mlir::registerDialect<mlir::lambdapure::LambdapureDialect>();
@@ -114,16 +115,16 @@ int main(int argc, char **argv){
     pm.addPass(mlir::lambdapure::createDestructiveUpdatePattern());
   }
 
-
-
-
-  if(runtimeLowering || refCount ){
-    pm.addPass(mlir::lambdapure::createLambdapureToLeanLowering());
-  }
-
   if(refCount ){
     pm.addPass(mlir::lambdapure::createReferenceRewriterPattern());
   }
+
+
+
+  if(runtimeLowering){
+    pm.addPass(mlir::lambdapure::createLambdapureToLeanLowering());
+  }
+
 
 
 
@@ -132,7 +133,7 @@ int main(int argc, char **argv){
     auto m = *module;
     lambdapure::translate(m);
   }
-  if(dumpMLIR)
+  if(runtimeLowering || refCount || desUpdates)
     module -> dump();
 
   return 0;

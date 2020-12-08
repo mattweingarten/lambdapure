@@ -17,17 +17,16 @@ class CaseOp;
 class ConstructorOp;
 class CtorSetOp;
 class DecOp;
-class ExclCheckOp;
 class IncOp;
 class IntegerConstOp;
-class NoOp;
-class ObjTagOp;
+class PapOp;
 class ProjectionOp;
 class ResetOp;
 class ReturnOp;
 class ReuseAllocCtorOp;
 class ReuseConstructorOp;
-class TagCheckOp;
+class TagGetOp;
+class TagSetOp;
 class UnboxOp;
 
 //===----------------------------------------------------------------------===//
@@ -335,41 +334,6 @@ public:
 };
 
 //===----------------------------------------------------------------------===//
-// lambdapure::ExclCheckOp declarations
-//===----------------------------------------------------------------------===//
-
-class ExclCheckOpOperandAdaptor {
-public:
-  ExclCheckOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
-  ExclCheckOpOperandAdaptor(ExclCheckOp& op);
-  std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
-  ValueRange getODSOperands(unsigned index);
-  Value object();
-
-private:
-  ValueRange odsOperands;
-  DictionaryAttr odsAttrs;
-};
-class ExclCheckOp : public Op<ExclCheckOp, OpTrait::ZeroRegion, OpTrait::OneResult, OpTrait::ZeroSuccessor, OpTrait::OneOperand, MemoryEffectOpInterface::Trait> {
-public:
-  using Op::Op;
-  using OperandAdaptor = ExclCheckOpOperandAdaptor;
-  static StringRef getOperationName();
-  std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
-  Operation::operand_range getODSOperands(unsigned index);
-  Value object();
-  ::mlir::MutableOperandRange objectMutable();
-  std::pair<unsigned, unsigned> getODSResultIndexAndLength(unsigned index);
-  Operation::result_range getODSResults(unsigned index);
-  static void build(OpBuilder &builder,OperationState &state, mlir::Value operand);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value object);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value object);
-  static void build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes);
-  LogicalResult verify();
-  void getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects);
-};
-
-//===----------------------------------------------------------------------===//
 // lambdapure::IncOp declarations
 //===----------------------------------------------------------------------===//
 
@@ -441,67 +405,43 @@ public:
 };
 
 //===----------------------------------------------------------------------===//
-// lambdapure::NoOp declarations
+// lambdapure::PapOp declarations
 //===----------------------------------------------------------------------===//
 
-class NoOpOperandAdaptor {
+class PapOpOperandAdaptor {
 public:
-  NoOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
-  NoOpOperandAdaptor(NoOp& op);
+  PapOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
+  PapOpOperandAdaptor(PapOp& op);
   std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
   ValueRange getODSOperands(unsigned index);
+  ValueRange operands();
+  FlatSymbolRefAttr callee();
 
 private:
   ValueRange odsOperands;
   DictionaryAttr odsAttrs;
 };
-class NoOp : public Op<NoOp, OpTrait::ZeroRegion, OpTrait::ZeroResult, OpTrait::ZeroSuccessor, OpTrait::ZeroOperands> {
+class PapOp : public Op<PapOp, OpTrait::ZeroRegion, OpTrait::OneResult, OpTrait::ZeroSuccessor, OpTrait::VariadicOperands> {
 public:
   using Op::Op;
-  using OperandAdaptor = NoOpOperandAdaptor;
+  using OperandAdaptor = PapOpOperandAdaptor;
   static StringRef getOperationName();
   std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
   Operation::operand_range getODSOperands(unsigned index);
+  Operation::operand_range operands();
+  ::mlir::MutableOperandRange operandsMutable();
   std::pair<unsigned, unsigned> getODSResultIndexAndLength(unsigned index);
   Operation::result_range getODSResults(unsigned index);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes);
+  FlatSymbolRefAttr calleeAttr();
+  StringRef callee();
+  void calleeAttr(FlatSymbolRefAttr attr);
+  static void build(OpBuilder &builder, OperationState &state, StringRef callee, ArrayRef<Value> args);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, FlatSymbolRefAttr callee, ValueRange operands);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, FlatSymbolRefAttr callee, ValueRange operands);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, StringRef callee, ValueRange operands);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, StringRef callee, ValueRange operands);
   static void build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes);
   LogicalResult verify();
-};
-
-//===----------------------------------------------------------------------===//
-// lambdapure::ObjTagOp declarations
-//===----------------------------------------------------------------------===//
-
-class ObjTagOpOperandAdaptor {
-public:
-  ObjTagOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
-  ObjTagOpOperandAdaptor(ObjTagOp& op);
-  std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
-  ValueRange getODSOperands(unsigned index);
-  Value object();
-
-private:
-  ValueRange odsOperands;
-  DictionaryAttr odsAttrs;
-};
-class ObjTagOp : public Op<ObjTagOp, OpTrait::ZeroRegion, OpTrait::OneResult, OpTrait::ZeroSuccessor, OpTrait::OneOperand, MemoryEffectOpInterface::Trait> {
-public:
-  using Op::Op;
-  using OperandAdaptor = ObjTagOpOperandAdaptor;
-  static StringRef getOperationName();
-  std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
-  Operation::operand_range getODSOperands(unsigned index);
-  Value object();
-  ::mlir::MutableOperandRange objectMutable();
-  std::pair<unsigned, unsigned> getODSResultIndexAndLength(unsigned index);
-  Operation::result_range getODSResults(unsigned index);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value object);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value object);
-  static void build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes);
-  LogicalResult verify();
-  void getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects);
 };
 
 //===----------------------------------------------------------------------===//
@@ -698,41 +638,74 @@ public:
 };
 
 //===----------------------------------------------------------------------===//
-// lambdapure::TagCheckOp declarations
+// lambdapure::TagGetOp declarations
 //===----------------------------------------------------------------------===//
 
-class TagCheckOpOperandAdaptor {
+class TagGetOpOperandAdaptor {
 public:
-  TagCheckOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
-  TagCheckOpOperandAdaptor(TagCheckOp& op);
+  TagGetOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
+  TagGetOpOperandAdaptor(TagGetOp& op);
   std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
   ValueRange getODSOperands(unsigned index);
-  Value cmp();
-  IntegerAttr branch();
+  Value object();
 
 private:
   ValueRange odsOperands;
   DictionaryAttr odsAttrs;
 };
-class TagCheckOp : public Op<TagCheckOp, OpTrait::ZeroRegion, OpTrait::OneResult, OpTrait::ZeroSuccessor, OpTrait::OneOperand, MemoryEffectOpInterface::Trait> {
+class TagGetOp : public Op<TagGetOp, OpTrait::ZeroRegion, OpTrait::OneResult, OpTrait::ZeroSuccessor, OpTrait::OneOperand, MemoryEffectOpInterface::Trait> {
 public:
   using Op::Op;
-  using OperandAdaptor = TagCheckOpOperandAdaptor;
+  using OperandAdaptor = TagGetOpOperandAdaptor;
   static StringRef getOperationName();
   std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
   Operation::operand_range getODSOperands(unsigned index);
-  Value cmp();
-  ::mlir::MutableOperandRange cmpMutable();
+  Value object();
+  ::mlir::MutableOperandRange objectMutable();
   std::pair<unsigned, unsigned> getODSResultIndexAndLength(unsigned index);
   Operation::result_range getODSResults(unsigned index);
-  IntegerAttr branchAttr();
-  APInt branch();
-  void branchAttr(IntegerAttr attr);
-  static void build(OpBuilder &builder,OperationState &state,int branch, mlir::Value operand);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value cmp, IntegerAttr branch);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value cmp, IntegerAttr branch);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value cmp, APInt branch);
-  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value cmp, APInt branch);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value object);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value object);
+  static void build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes);
+  LogicalResult verify();
+  void getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects);
+};
+
+//===----------------------------------------------------------------------===//
+// lambdapure::TagSetOp declarations
+//===----------------------------------------------------------------------===//
+
+class TagSetOpOperandAdaptor {
+public:
+  TagSetOpOperandAdaptor(ValueRange values, DictionaryAttr attrs = nullptr);
+  TagSetOpOperandAdaptor(TagSetOp& op);
+  std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
+  ValueRange getODSOperands(unsigned index);
+  Value object();
+  IntegerAttr tag();
+
+private:
+  ValueRange odsOperands;
+  DictionaryAttr odsAttrs;
+};
+class TagSetOp : public Op<TagSetOp, OpTrait::ZeroRegion, OpTrait::ZeroResult, OpTrait::ZeroSuccessor, OpTrait::OneOperand, MemoryEffectOpInterface::Trait> {
+public:
+  using Op::Op;
+  using OperandAdaptor = TagSetOpOperandAdaptor;
+  static StringRef getOperationName();
+  std::pair<unsigned, unsigned> getODSOperandIndexAndLength(unsigned index);
+  Operation::operand_range getODSOperands(unsigned index);
+  Value object();
+  ::mlir::MutableOperandRange objectMutable();
+  std::pair<unsigned, unsigned> getODSResultIndexAndLength(unsigned index);
+  Operation::result_range getODSResults(unsigned index);
+  IntegerAttr tagAttr();
+  APInt tag();
+  void tagAttr(IntegerAttr attr);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, IntegerAttr tag, Value object);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, IntegerAttr tag, Value object);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, APInt tag, Value object);
+  static void build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, APInt tag, Value object);
   static void build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes);
   LogicalResult verify();
   void getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects);

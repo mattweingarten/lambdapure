@@ -1,0 +1,30 @@
+[compiler.lambda_pure] >> m._main
+λ (_x_1_x_2 : _obj),
+  L.casesOn _x_1
+    (let _x_3 : _obj := _proj.0 _x_2,
+         _x_4 : _obj := _proj.1 _x_2,
+         _x_5 : UInt8 := Nat.decLt _x_3 _x_1
+     in Bool.casesOn _x_5 (let _x_6 : _obj := m._main _x_3 _x_4 in _x_6) (let _x_7 : _obj := m._main _x_1 _x_4 in _x_7))
+
+
+def m._main (x_1 : obj) (x_2 : obj) : obj :=
+  case x_2 : obj of
+  L.Nil →
+    ret x_1
+  L.Cons →
+    let x_3 : obj := proj[0] x_2;
+    let x_4 : obj := proj[1] x_2;
+    let x_5 : u8 := Nat.decLt x_3 x_1;
+    case x_5 : obj of
+    Bool.false →
+      let x_6 : obj := m._main x_3 x_4;
+      ret x_6
+    Bool.true →
+      let x_7 : obj := m._main x_1 x_4;
+      ret x_7[compiler.lambda_pure] >> m
+λ (_x_1_x_2 : _obj), let _x_3 : _obj := m._main _x_1 _x_2 in _x_3
+
+
+def m (x_1 : obj) (x_2 : obj) : obj :=
+  let x_3 : obj := m._main x_1 x_2;
+  ret x_3

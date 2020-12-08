@@ -1,3 +1,8 @@
+def test :obj :=
+  let x_1 : obj := pap add_one;
+  ret x_1
+
+
 def main._closed_2 : obj :=
   let x_1 : obj := pap add_one;
   ret x_1

@@ -62,6 +62,14 @@ namespace lambdapure{
     }
   }
 
+  void PapExprAST::print(){
+    std::cout << "pap " << FName;
+    for(int i = 0; i < Args.size(); ++i){
+      std::cout  << " ";
+      Args.at(i) -> print();
+    }
+  }
+
   void CallExprAST::print(){
     std::cout << "Call " << FName ;
     for(int i = 0; i < Args.size(); ++i){

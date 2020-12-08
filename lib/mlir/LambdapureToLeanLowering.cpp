@@ -51,11 +51,7 @@ namespace {
     ConversionPattern(lambdapure::ReuseConstructorOp::getOperationName(),1,ctxt){}
     LogicalResult matchAndRewrite
     (Operation *op, ArrayRef<Value> operands, ConversionPatternRewriter &rewriter) const final {
-      // auto curr_block = rewriter.getBlock();
-      // auto new_block = curr_block -> splitBlock(op);
       auto loc = op->getLoc();
-      // mlir::Value condVal = rewriter.create<lambdapure::ExclCheckOp>(loc,op -> getOperand(0));
-      // rewriter.create<mlir::CondBranchOp>(loc(),condVal,exclusive_block,shared_block);
       mlir::Value alloc_ctor =  rewriter.create<lambdapure::ReuseAllocCtorOp>(loc,
           op->getResultTypes(),
           op->getAttrOfType<IntegerAttr>("tag"),

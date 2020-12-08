@@ -71,6 +71,17 @@ std::unique_ptr<AppExprAST> ParseAppExpr(){
   return std::make_unique<AppExprAST>(fname,std::move(args));
 }
 
+std::unique_ptr<PapExprAST> ParsePapExpr(){
+  lexer.getNextToken();//consume pap
+  std::string fname = lexer.getId();
+  lexer.getNextToken(); //consume funcname
+  std::vector<std::unique_ptr<VariableExprAST>> args;
+  while(lexer.getCurToken() != tok_semicolon){
+    args.push_back(ParseVarExpr());
+  }
+  return std::make_unique<PapExprAST>(fname,std::move(args));
+}
+
 std::unique_ptr<CallExprAST> ParseCallExpr(){
   std::string fname = lexer.getId();
   lexer.getNextToken();//consume funcname
@@ -111,6 +122,9 @@ std::unique_ptr<ProjExprAST> ParseProjExpr(){
    }
    if(lexer.getCurToken() == tok_app){
      return std::move(ParseAppExpr());
+   }
+   else if(lexer.getCurToken() == tok_pap){
+     return std::move(ParsePapExpr());
    }
    else if (lexer.getCurToken() == tok_lit) {
      return std::move(ParseNumberExpr());

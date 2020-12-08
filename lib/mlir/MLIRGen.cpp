@@ -179,7 +179,7 @@ mlir::LogicalResult mlirGen(CaseStmtAST &casestmt){
   auto bodies = casestmt.getBodies();
   mlir::Type t  = curr_val.getType();
   if(mlir::lambdapure::ObjectType::kindof(t.getKind())){
-    curr_val = builder.create<ObjTagOp>(loc(), builder.getIntegerType(8),curr_val);
+    curr_val = builder.create<TagGetOp>(loc(), builder.getIntegerType(8),curr_val);
   }
   auto caseOp = builder.create<CaseOp>(loc(),curr_val,bodies.size());
   int i = 0;
@@ -236,6 +236,15 @@ mlir::Value mlirGen(CallExprAST &expr,mlir::Type ty){
 
 }
 
+mlir::Value mlirGen(PapExprAST &expr,mlir::Type ty){
+  std::vector<mlir::Value> args = std::vector<mlir::Value>();
+  for(auto &varExpr : expr.getArgs()){
+    args.push_back(mlirGen(*varExpr));
+  }
+  std::string fName = expr.getFName();
+  return builder.create<PapOp>(loc(),fName,args);
+}
+
 
 mlir::Value mlirGen(ProjExprAST &expr, mlir::Type ty){
   auto varExpr = expr.getVar();
@@ -267,6 +276,8 @@ mlir::Value mlirGen(ExprAST &expr,mlir::Type ty){
         return mlirGen(cast<CtorExprAST>(expr),ty);
     case lambdapure::ExprAST::ProjExpr:
         return mlirGen(cast<ProjExprAST>(expr),ty);
+    case lambdapure::ExprAST::PapExpr:
+        return mlirGen(cast<PapExprAST>(expr),ty);
     default:
       std::cout << "Invalid expression found in lambdapure AST" << std::endl;
       return nullptr;

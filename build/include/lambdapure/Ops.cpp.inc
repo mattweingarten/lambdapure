@@ -17,17 +17,16 @@ lambdapure::CaseOp,
 lambdapure::ConstructorOp,
 lambdapure::CtorSetOp,
 lambdapure::DecOp,
-lambdapure::ExclCheckOp,
 lambdapure::IncOp,
 lambdapure::IntegerConstOp,
-lambdapure::NoOp,
-lambdapure::ObjTagOp,
+lambdapure::PapOp,
 lambdapure::ProjectionOp,
 lambdapure::ResetOp,
 lambdapure::ReturnOp,
 lambdapure::ReuseAllocCtorOp,
 lambdapure::ReuseConstructorOp,
-lambdapure::TagCheckOp,
+lambdapure::TagGetOp,
+lambdapure::TagSetOp,
 lambdapure::UnboxOp
 #endif  // GET_OP_LIST
 
@@ -1185,117 +1184,6 @@ LogicalResult DecOp::verify() {
 
 
 //===----------------------------------------------------------------------===//
-// lambdapure::ExclCheckOp definitions
-//===----------------------------------------------------------------------===//
-
-ExclCheckOpOperandAdaptor::ExclCheckOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
-
-}
-
-ExclCheckOpOperandAdaptor::ExclCheckOpOperandAdaptor(ExclCheckOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
-
-}
-
-std::pair<unsigned, unsigned> ExclCheckOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
-  return {index, 1};
-}
-
-ValueRange ExclCheckOpOperandAdaptor::getODSOperands(unsigned index) {
-  auto valueRange = getODSOperandIndexAndLength(index);
-  return {std::next(odsOperands.begin(), valueRange.first),
-           std::next(odsOperands.begin(), valueRange.first + valueRange.second)};
-}
-
-Value ExclCheckOpOperandAdaptor::object() {
-  return *getODSOperands(0).begin();
-}
-
-StringRef ExclCheckOp::getOperationName() {
-  return "lambdapure.ExclCheckOp";
-}
-
-std::pair<unsigned, unsigned> ExclCheckOp::getODSOperandIndexAndLength(unsigned index) {
-  return {index, 1};
-}
-
-Operation::operand_range ExclCheckOp::getODSOperands(unsigned index) {
-  auto valueRange = getODSOperandIndexAndLength(index);
-  return {std::next(getOperation()->operand_begin(), valueRange.first),
-           std::next(getOperation()->operand_begin(), valueRange.first + valueRange.second)};
-}
-
-Value ExclCheckOp::object() {
-  return *getODSOperands(0).begin();
-}
-
-::mlir::MutableOperandRange ExclCheckOp::objectMutable() {
-  auto range = getODSOperandIndexAndLength(0);
-  return ::mlir::MutableOperandRange(getOperation(), range.first, range.second);
-}
-
-std::pair<unsigned, unsigned> ExclCheckOp::getODSResultIndexAndLength(unsigned index) {
-  return {index, 1};
-}
-
-Operation::result_range ExclCheckOp::getODSResults(unsigned index) {
-  auto valueRange = getODSResultIndexAndLength(index);
-  return {std::next(getOperation()->result_begin(), valueRange.first),
-           std::next(getOperation()->result_begin(), valueRange.first + valueRange.second)};
-}
-
-
-
-void ExclCheckOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value object) {
-  odsState.addOperands(object);
-  odsState.addTypes(resultType0);
-}
-
-void ExclCheckOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value object) {
-  odsState.addOperands(object);
-  assert(resultTypes.size() == 1u && "mismatched number of results");
-  odsState.addTypes(resultTypes);
-}
-
-void ExclCheckOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
-  assert(operands.size() == 1u && "mismatched number of parameters");
-  odsState.addOperands(operands);
-  odsState.addAttributes(attributes);
-  assert(resultTypes.size() == 1u && "mismatched number of return types");
-  odsState.addTypes(resultTypes);
-}
-
-LogicalResult ExclCheckOp::verify() {
-  {
-    unsigned index = 0; (void)index;
-    auto valueGroup0 = getODSOperands(0);
-    for (Value v : valueGroup0) {
-      (void)v;
-      if (!((v.getType().isa<ObjectType>()))) {
-        return emitOpError("operand #") << index << " must be Lambdapure object type, but got " << v.getType();
-      }
-      ++index;
-    }
-  }
-  {
-    unsigned index = 0; (void)index;
-    auto valueGroup0 = getODSResults(0);
-    for (Value v : valueGroup0) {
-      (void)v;
-      if (!((v.getType().isSignlessInteger(1)))) {
-        return emitOpError("result #") << index << " must be 1-bit signless integer, but got " << v.getType();
-      }
-      ++index;
-    }
-  }
-  return mlir::success();
-}
-
-void ExclCheckOp::getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects) {
-
-}
-
-
-//===----------------------------------------------------------------------===//
 // lambdapure::IncOp definitions
 //===----------------------------------------------------------------------===//
 
@@ -1517,158 +1405,152 @@ void IntegerConstOp::getEffects(SmallVectorImpl<SideEffects::EffectInstance<Memo
 
 
 //===----------------------------------------------------------------------===//
-// lambdapure::NoOp definitions
+// lambdapure::PapOp definitions
 //===----------------------------------------------------------------------===//
 
-NoOpOperandAdaptor::NoOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
+PapOpOperandAdaptor::PapOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
 
 }
 
-NoOpOperandAdaptor::NoOpOperandAdaptor(NoOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
+PapOpOperandAdaptor::PapOpOperandAdaptor(PapOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
 
 }
 
-std::pair<unsigned, unsigned> NoOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
-  return {index, 1};
+std::pair<unsigned, unsigned> PapOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
+  bool isVariadic[] = {true};
+  int prevVariadicCount = 0;
+  for (unsigned i = 0; i < index; ++i)
+    if (isVariadic[i]) ++prevVariadicCount;
+
+  // Calculate how many dynamic values a static variadic operand corresponds to.
+  // This assumes all static variadic operands have the same dynamic value count.
+  int variadicSize = (odsOperands.size() - 0) / 1;
+  // `index` passed in as the parameter is the static index which counts each
+  // operand (variadic or not) as size 1. So here for each previous static variadic
+  // operand, we need to offset by (variadicSize - 1) to get where the dynamic
+  // value pack for this static operand starts.
+  int start = index + (variadicSize - 1) * prevVariadicCount;
+  int size = isVariadic[index] ? variadicSize : 1;
+  return {start, size};
 }
 
-ValueRange NoOpOperandAdaptor::getODSOperands(unsigned index) {
+ValueRange PapOpOperandAdaptor::getODSOperands(unsigned index) {
   auto valueRange = getODSOperandIndexAndLength(index);
   return {std::next(odsOperands.begin(), valueRange.first),
            std::next(odsOperands.begin(), valueRange.first + valueRange.second)};
 }
 
-StringRef NoOp::getOperationName() {
-  return "lambdapure.NoOp";
+ValueRange PapOpOperandAdaptor::operands() {
+  return getODSOperands(0);
 }
 
-std::pair<unsigned, unsigned> NoOp::getODSOperandIndexAndLength(unsigned index) {
-  return {index, 1};
+FlatSymbolRefAttr PapOpOperandAdaptor::callee() {
+  assert(odsAttrs && "no attributes when constructing adapter");
+  FlatSymbolRefAttr attr = odsAttrs.get("callee").cast<FlatSymbolRefAttr>();
+  return attr;
 }
 
-Operation::operand_range NoOp::getODSOperands(unsigned index) {
+StringRef PapOp::getOperationName() {
+  return "lambdapure.PapOp";
+}
+
+std::pair<unsigned, unsigned> PapOp::getODSOperandIndexAndLength(unsigned index) {
+  bool isVariadic[] = {true};
+  int prevVariadicCount = 0;
+  for (unsigned i = 0; i < index; ++i)
+    if (isVariadic[i]) ++prevVariadicCount;
+
+  // Calculate how many dynamic values a static variadic operand corresponds to.
+  // This assumes all static variadic operands have the same dynamic value count.
+  int variadicSize = (getOperation()->getNumOperands() - 0) / 1;
+  // `index` passed in as the parameter is the static index which counts each
+  // operand (variadic or not) as size 1. So here for each previous static variadic
+  // operand, we need to offset by (variadicSize - 1) to get where the dynamic
+  // value pack for this static operand starts.
+  int start = index + (variadicSize - 1) * prevVariadicCount;
+  int size = isVariadic[index] ? variadicSize : 1;
+  return {start, size};
+}
+
+Operation::operand_range PapOp::getODSOperands(unsigned index) {
   auto valueRange = getODSOperandIndexAndLength(index);
   return {std::next(getOperation()->operand_begin(), valueRange.first),
            std::next(getOperation()->operand_begin(), valueRange.first + valueRange.second)};
 }
 
-std::pair<unsigned, unsigned> NoOp::getODSResultIndexAndLength(unsigned index) {
-  return {index, 1};
+Operation::operand_range PapOp::operands() {
+  return getODSOperands(0);
 }
 
-Operation::result_range NoOp::getODSResults(unsigned index) {
-  auto valueRange = getODSResultIndexAndLength(index);
-  return {std::next(getOperation()->result_begin(), valueRange.first),
-           std::next(getOperation()->result_begin(), valueRange.first + valueRange.second)};
-}
-
-void NoOp::build(OpBuilder &odsBuilder, OperationState &odsState) {
-
-}
-
-void NoOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes) {
-  assert(resultTypes.size() == 0u && "mismatched number of results");
-  odsState.addTypes(resultTypes);
-}
-
-void NoOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
-  assert(operands.size() == 0u && "mismatched number of parameters");
-  odsState.addOperands(operands);
-  odsState.addAttributes(attributes);
-  assert(resultTypes.size() == 0u && "mismatched number of return types");
-  odsState.addTypes(resultTypes);
-}
-
-LogicalResult NoOp::verify() {
-  {
-    unsigned index = 0; (void)index;
-  }
-  {
-    unsigned index = 0; (void)index;
-  }
-  return mlir::success();
-}
-
-
-//===----------------------------------------------------------------------===//
-// lambdapure::ObjTagOp definitions
-//===----------------------------------------------------------------------===//
-
-ObjTagOpOperandAdaptor::ObjTagOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
-
-}
-
-ObjTagOpOperandAdaptor::ObjTagOpOperandAdaptor(ObjTagOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
-
-}
-
-std::pair<unsigned, unsigned> ObjTagOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
-  return {index, 1};
-}
-
-ValueRange ObjTagOpOperandAdaptor::getODSOperands(unsigned index) {
-  auto valueRange = getODSOperandIndexAndLength(index);
-  return {std::next(odsOperands.begin(), valueRange.first),
-           std::next(odsOperands.begin(), valueRange.first + valueRange.second)};
-}
-
-Value ObjTagOpOperandAdaptor::object() {
-  return *getODSOperands(0).begin();
-}
-
-StringRef ObjTagOp::getOperationName() {
-  return "lambdapure.ObjTagOp";
-}
-
-std::pair<unsigned, unsigned> ObjTagOp::getODSOperandIndexAndLength(unsigned index) {
-  return {index, 1};
-}
-
-Operation::operand_range ObjTagOp::getODSOperands(unsigned index) {
-  auto valueRange = getODSOperandIndexAndLength(index);
-  return {std::next(getOperation()->operand_begin(), valueRange.first),
-           std::next(getOperation()->operand_begin(), valueRange.first + valueRange.second)};
-}
-
-Value ObjTagOp::object() {
-  return *getODSOperands(0).begin();
-}
-
-::mlir::MutableOperandRange ObjTagOp::objectMutable() {
+::mlir::MutableOperandRange PapOp::operandsMutable() {
   auto range = getODSOperandIndexAndLength(0);
   return ::mlir::MutableOperandRange(getOperation(), range.first, range.second);
 }
 
-std::pair<unsigned, unsigned> ObjTagOp::getODSResultIndexAndLength(unsigned index) {
+std::pair<unsigned, unsigned> PapOp::getODSResultIndexAndLength(unsigned index) {
   return {index, 1};
 }
 
-Operation::result_range ObjTagOp::getODSResults(unsigned index) {
+Operation::result_range PapOp::getODSResults(unsigned index) {
   auto valueRange = getODSResultIndexAndLength(index);
   return {std::next(getOperation()->result_begin(), valueRange.first),
            std::next(getOperation()->result_begin(), valueRange.first + valueRange.second)};
 }
 
-void ObjTagOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value object) {
-  odsState.addOperands(object);
+FlatSymbolRefAttr PapOp::calleeAttr() {
+  return this->getAttr("callee").cast<FlatSymbolRefAttr>();
+}
+
+StringRef PapOp::callee() {
+  auto attr = calleeAttr();
+  return attr.getValue();
+}
+
+void PapOp::calleeAttr(FlatSymbolRefAttr attr) {
+  this->getOperation()->setAttr("callee", attr);
+}
+
+
+
+void PapOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, FlatSymbolRefAttr callee, ValueRange operands) {
+  odsState.addOperands(operands);
+  odsState.addAttribute("callee", callee);
   odsState.addTypes(resultType0);
 }
 
-void ObjTagOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value object) {
-  odsState.addOperands(object);
+void PapOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, FlatSymbolRefAttr callee, ValueRange operands) {
+  odsState.addOperands(operands);
+  odsState.addAttribute("callee", callee);
   assert(resultTypes.size() == 1u && "mismatched number of results");
   odsState.addTypes(resultTypes);
 }
 
-void ObjTagOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
-  assert(operands.size() == 1u && "mismatched number of parameters");
+void PapOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, StringRef callee, ValueRange operands) {
+  odsState.addOperands(operands);
+  odsState.addAttribute("callee", odsBuilder.getSymbolRefAttr(callee));
+  odsState.addTypes(resultType0);
+}
+
+void PapOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, StringRef callee, ValueRange operands) {
+  odsState.addOperands(operands);
+  odsState.addAttribute("callee", odsBuilder.getSymbolRefAttr(callee));
+  assert(resultTypes.size() == 1u && "mismatched number of results");
+  odsState.addTypes(resultTypes);
+}
+
+void PapOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
   odsState.addOperands(operands);
   odsState.addAttributes(attributes);
   assert(resultTypes.size() == 1u && "mismatched number of return types");
   odsState.addTypes(resultTypes);
 }
 
-LogicalResult ObjTagOp::verify() {
+LogicalResult PapOp::verify() {
+  auto tblgen_callee = this->getAttr("callee");
+  if (!tblgen_callee) return emitOpError("requires attribute 'callee'");
+  {
+    if (!((tblgen_callee.isa<FlatSymbolRefAttr>()))) return emitOpError("attribute 'callee' failed to satisfy constraint: flat symbol reference attribute");
+  }
   {
     unsigned index = 0; (void)index;
     auto valueGroup0 = getODSOperands(0);
@@ -1685,17 +1567,13 @@ LogicalResult ObjTagOp::verify() {
     auto valueGroup0 = getODSResults(0);
     for (Value v : valueGroup0) {
       (void)v;
-      if (!((v.getType().isSignlessInteger(8)))) {
-        return emitOpError("result #") << index << " must be 8-bit signless integer, but got " << v.getType();
+      if (!((v.getType().isa<ObjectType>()))) {
+        return emitOpError("result #") << index << " must be Lambdapure object type, but got " << v.getType();
       }
       ++index;
     }
   }
   return mlir::success();
-}
-
-void ObjTagOp::getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects) {
-
 }
 
 
@@ -2415,112 +2293,76 @@ LogicalResult ReuseConstructorOp::verify() {
 
 
 //===----------------------------------------------------------------------===//
-// lambdapure::TagCheckOp definitions
+// lambdapure::TagGetOp definitions
 //===----------------------------------------------------------------------===//
 
-TagCheckOpOperandAdaptor::TagCheckOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
+TagGetOpOperandAdaptor::TagGetOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
 
 }
 
-TagCheckOpOperandAdaptor::TagCheckOpOperandAdaptor(TagCheckOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
+TagGetOpOperandAdaptor::TagGetOpOperandAdaptor(TagGetOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
 
 }
 
-std::pair<unsigned, unsigned> TagCheckOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
+std::pair<unsigned, unsigned> TagGetOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
   return {index, 1};
 }
 
-ValueRange TagCheckOpOperandAdaptor::getODSOperands(unsigned index) {
+ValueRange TagGetOpOperandAdaptor::getODSOperands(unsigned index) {
   auto valueRange = getODSOperandIndexAndLength(index);
   return {std::next(odsOperands.begin(), valueRange.first),
            std::next(odsOperands.begin(), valueRange.first + valueRange.second)};
 }
 
-Value TagCheckOpOperandAdaptor::cmp() {
+Value TagGetOpOperandAdaptor::object() {
   return *getODSOperands(0).begin();
 }
 
-IntegerAttr TagCheckOpOperandAdaptor::branch() {
-  assert(odsAttrs && "no attributes when constructing adapter");
-  IntegerAttr attr = odsAttrs.get("branch").cast<IntegerAttr>();
-  return attr;
+StringRef TagGetOp::getOperationName() {
+  return "lambdapure.TagGetOp";
 }
 
-StringRef TagCheckOp::getOperationName() {
-  return "lambdapure.TagCheckOp";
-}
-
-std::pair<unsigned, unsigned> TagCheckOp::getODSOperandIndexAndLength(unsigned index) {
+std::pair<unsigned, unsigned> TagGetOp::getODSOperandIndexAndLength(unsigned index) {
   return {index, 1};
 }
 
-Operation::operand_range TagCheckOp::getODSOperands(unsigned index) {
+Operation::operand_range TagGetOp::getODSOperands(unsigned index) {
   auto valueRange = getODSOperandIndexAndLength(index);
   return {std::next(getOperation()->operand_begin(), valueRange.first),
            std::next(getOperation()->operand_begin(), valueRange.first + valueRange.second)};
 }
 
-Value TagCheckOp::cmp() {
+Value TagGetOp::object() {
   return *getODSOperands(0).begin();
 }
 
-::mlir::MutableOperandRange TagCheckOp::cmpMutable() {
+::mlir::MutableOperandRange TagGetOp::objectMutable() {
   auto range = getODSOperandIndexAndLength(0);
   return ::mlir::MutableOperandRange(getOperation(), range.first, range.second);
 }
 
-std::pair<unsigned, unsigned> TagCheckOp::getODSResultIndexAndLength(unsigned index) {
+std::pair<unsigned, unsigned> TagGetOp::getODSResultIndexAndLength(unsigned index) {
   return {index, 1};
 }
 
-Operation::result_range TagCheckOp::getODSResults(unsigned index) {
+Operation::result_range TagGetOp::getODSResults(unsigned index) {
   auto valueRange = getODSResultIndexAndLength(index);
   return {std::next(getOperation()->result_begin(), valueRange.first),
            std::next(getOperation()->result_begin(), valueRange.first + valueRange.second)};
 }
 
-IntegerAttr TagCheckOp::branchAttr() {
-  return this->getAttr("branch").cast<IntegerAttr>();
-}
-
-APInt TagCheckOp::branch() {
-  auto attr = branchAttr();
-  return attr.getValue();
-}
-
-void TagCheckOp::branchAttr(IntegerAttr attr) {
-  this->getOperation()->setAttr("branch", attr);
-}
-
-
-
-void TagCheckOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value cmp, IntegerAttr branch) {
-  odsState.addOperands(cmp);
-  odsState.addAttribute("branch", branch);
+void TagGetOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value object) {
+  odsState.addOperands(object);
   odsState.addTypes(resultType0);
 }
 
-void TagCheckOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value cmp, IntegerAttr branch) {
-  odsState.addOperands(cmp);
-  odsState.addAttribute("branch", branch);
+void TagGetOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value object) {
+  odsState.addOperands(object);
   assert(resultTypes.size() == 1u && "mismatched number of results");
   odsState.addTypes(resultTypes);
 }
 
-void TagCheckOp::build(OpBuilder &odsBuilder, OperationState &odsState, Type resultType0, Value cmp, APInt branch) {
-  odsState.addOperands(cmp);
-  odsState.addAttribute("branch", odsBuilder.getIntegerAttr(odsBuilder.getIntegerType(64), branch));
-  odsState.addTypes(resultType0);
-}
-
-void TagCheckOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, Value cmp, APInt branch) {
-  odsState.addOperands(cmp);
-  odsState.addAttribute("branch", odsBuilder.getIntegerAttr(odsBuilder.getIntegerType(64), branch));
-  assert(resultTypes.size() == 1u && "mismatched number of results");
-  odsState.addTypes(resultTypes);
-}
-
-void TagCheckOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
+void TagGetOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
   assert(operands.size() == 1u && "mismatched number of parameters");
   odsState.addOperands(operands);
   odsState.addAttributes(attributes);
@@ -2528,19 +2370,14 @@ void TagCheckOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> res
   odsState.addTypes(resultTypes);
 }
 
-LogicalResult TagCheckOp::verify() {
-  auto tblgen_branch = this->getAttr("branch");
-  if (!tblgen_branch) return emitOpError("requires attribute 'branch'");
-  {
-    if (!(((tblgen_branch.isa<IntegerAttr>())) && ((tblgen_branch.cast<IntegerAttr>().getType().isSignlessInteger(64))))) return emitOpError("attribute 'branch' failed to satisfy constraint: 64-bit signless integer attribute");
-  }
+LogicalResult TagGetOp::verify() {
   {
     unsigned index = 0; (void)index;
     auto valueGroup0 = getODSOperands(0);
     for (Value v : valueGroup0) {
       (void)v;
-      if (!((v.getType().isa<IntegerType>()))) {
-        return emitOpError("operand #") << index << " must be integer, but got " << v.getType();
+      if (!((v.getType().isa<ObjectType>()))) {
+        return emitOpError("operand #") << index << " must be Lambdapure object type, but got " << v.getType();
       }
       ++index;
     }
@@ -2550,8 +2387,8 @@ LogicalResult TagCheckOp::verify() {
     auto valueGroup0 = getODSResults(0);
     for (Value v : valueGroup0) {
       (void)v;
-      if (!((v.getType().isSignlessInteger(1)))) {
-        return emitOpError("result #") << index << " must be 1-bit signless integer, but got " << v.getType();
+      if (!((v.getType().isSignlessInteger(8)))) {
+        return emitOpError("result #") << index << " must be 8-bit signless integer, but got " << v.getType();
       }
       ++index;
     }
@@ -2559,7 +2396,145 @@ LogicalResult TagCheckOp::verify() {
   return mlir::success();
 }
 
-void TagCheckOp::getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects) {
+void TagGetOp::getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects) {
+
+}
+
+
+//===----------------------------------------------------------------------===//
+// lambdapure::TagSetOp definitions
+//===----------------------------------------------------------------------===//
+
+TagSetOpOperandAdaptor::TagSetOpOperandAdaptor(ValueRange values, DictionaryAttr attrs )  : odsOperands(values), odsAttrs(attrs) {
+
+}
+
+TagSetOpOperandAdaptor::TagSetOpOperandAdaptor(TagSetOp& op)  : odsOperands(op.getOperation()->getOperands()), odsAttrs(op.getOperation()->getAttrDictionary()) {
+
+}
+
+std::pair<unsigned, unsigned> TagSetOpOperandAdaptor::getODSOperandIndexAndLength(unsigned index) {
+  return {index, 1};
+}
+
+ValueRange TagSetOpOperandAdaptor::getODSOperands(unsigned index) {
+  auto valueRange = getODSOperandIndexAndLength(index);
+  return {std::next(odsOperands.begin(), valueRange.first),
+           std::next(odsOperands.begin(), valueRange.first + valueRange.second)};
+}
+
+Value TagSetOpOperandAdaptor::object() {
+  return *getODSOperands(0).begin();
+}
+
+IntegerAttr TagSetOpOperandAdaptor::tag() {
+  assert(odsAttrs && "no attributes when constructing adapter");
+  IntegerAttr attr = odsAttrs.get("tag").cast<IntegerAttr>();
+  return attr;
+}
+
+StringRef TagSetOp::getOperationName() {
+  return "lambdapure.TagSetOp";
+}
+
+std::pair<unsigned, unsigned> TagSetOp::getODSOperandIndexAndLength(unsigned index) {
+  return {index, 1};
+}
+
+Operation::operand_range TagSetOp::getODSOperands(unsigned index) {
+  auto valueRange = getODSOperandIndexAndLength(index);
+  return {std::next(getOperation()->operand_begin(), valueRange.first),
+           std::next(getOperation()->operand_begin(), valueRange.first + valueRange.second)};
+}
+
+Value TagSetOp::object() {
+  return *getODSOperands(0).begin();
+}
+
+::mlir::MutableOperandRange TagSetOp::objectMutable() {
+  auto range = getODSOperandIndexAndLength(0);
+  return ::mlir::MutableOperandRange(getOperation(), range.first, range.second);
+}
+
+std::pair<unsigned, unsigned> TagSetOp::getODSResultIndexAndLength(unsigned index) {
+  return {index, 1};
+}
+
+Operation::result_range TagSetOp::getODSResults(unsigned index) {
+  auto valueRange = getODSResultIndexAndLength(index);
+  return {std::next(getOperation()->result_begin(), valueRange.first),
+           std::next(getOperation()->result_begin(), valueRange.first + valueRange.second)};
+}
+
+IntegerAttr TagSetOp::tagAttr() {
+  return this->getAttr("tag").cast<IntegerAttr>();
+}
+
+APInt TagSetOp::tag() {
+  auto attr = tagAttr();
+  return attr.getValue();
+}
+
+void TagSetOp::tagAttr(IntegerAttr attr) {
+  this->getOperation()->setAttr("tag", attr);
+}
+
+void TagSetOp::build(OpBuilder &odsBuilder, OperationState &odsState, IntegerAttr tag, Value object) {
+  odsState.addOperands(object);
+  odsState.addAttribute("tag", tag);
+}
+
+void TagSetOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, IntegerAttr tag, Value object) {
+  odsState.addOperands(object);
+  odsState.addAttribute("tag", tag);
+  assert(resultTypes.size() == 0u && "mismatched number of results");
+  odsState.addTypes(resultTypes);
+}
+
+void TagSetOp::build(OpBuilder &odsBuilder, OperationState &odsState, APInt tag, Value object) {
+  odsState.addOperands(object);
+  odsState.addAttribute("tag", odsBuilder.getIntegerAttr(odsBuilder.getIntegerType(8), tag));
+}
+
+void TagSetOp::build(OpBuilder &odsBuilder, OperationState &odsState, ArrayRef<Type> resultTypes, APInt tag, Value object) {
+  odsState.addOperands(object);
+  odsState.addAttribute("tag", odsBuilder.getIntegerAttr(odsBuilder.getIntegerType(8), tag));
+  assert(resultTypes.size() == 0u && "mismatched number of results");
+  odsState.addTypes(resultTypes);
+}
+
+void TagSetOp::build(OpBuilder &, OperationState &odsState, ArrayRef<Type> resultTypes, ValueRange operands, ArrayRef<NamedAttribute> attributes) {
+  assert(operands.size() == 1u && "mismatched number of parameters");
+  odsState.addOperands(operands);
+  odsState.addAttributes(attributes);
+  assert(resultTypes.size() == 0u && "mismatched number of return types");
+  odsState.addTypes(resultTypes);
+}
+
+LogicalResult TagSetOp::verify() {
+  auto tblgen_tag = this->getAttr("tag");
+  if (!tblgen_tag) return emitOpError("requires attribute 'tag'");
+  {
+    if (!(((tblgen_tag.isa<IntegerAttr>())) && ((tblgen_tag.cast<IntegerAttr>().getType().isSignlessInteger(8))))) return emitOpError("attribute 'tag' failed to satisfy constraint: 8-bit signless integer attribute");
+  }
+  {
+    unsigned index = 0; (void)index;
+    auto valueGroup0 = getODSOperands(0);
+    for (Value v : valueGroup0) {
+      (void)v;
+      if (!((v.getType().isa<ObjectType>()))) {
+        return emitOpError("operand #") << index << " must be Lambdapure object type, but got " << v.getType();
+      }
+      ++index;
+    }
+  }
+  {
+    unsigned index = 0; (void)index;
+  }
+  return mlir::success();
+}
+
+void TagSetOp::getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects) {
 
 }
 

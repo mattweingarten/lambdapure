@@ -33,6 +33,7 @@ public:
     NumberExpr,
     VarExpr,
     AppExpr,
+    PapExpr,
     CallExpr,
     ProjExpr,
     CtorExpr,
@@ -89,7 +90,17 @@ class AppExprAST : public ExprAST{
   static bool classof(const ExprAST *c) { return c->getKind() == AppExpr; }
 };
 
-
+class PapExprAST: public ExprAST{
+  std::string FName;
+  std::vector<std::unique_ptr<VariableExprAST>> Args;
+  public:
+    PapExprAST(const std::string &FName,std::vector<std::unique_ptr<VariableExprAST>> Args)
+        :ExprAST(PapExpr),FName(FName),Args(std::move(Args)){}
+  void print();
+  std::string getFName(){return FName;}
+  llvm::ArrayRef<std::unique_ptr<VariableExprAST>> getArgs(){return Args;}
+  static bool classof(const ExprAST *c) { return c->getKind() == PapExpr; }
+};
 //direct function call
 class CallExprAST : public ExprAST {
   std::string FName;

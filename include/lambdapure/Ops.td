@@ -45,8 +45,15 @@ def AppOp : Lambdapure_OP<"AppOp",[]>{
     OpBuilder<"OpBuilder &builder, OperationState &state, Value func, ArrayRef<Value> args, Type ty">
   ];
 
-  /* TODO return function type here of func */
+}
 
+def PapOp : Lambdapure_OP<"PapOp",[]>{
+  let summary = "function partial applciation, creating closure";
+  let arguments = (ins FlatSymbolRefAttr:$callee, Variadic<lambdapure_ObjectType>:$operands);
+  let results = (outs lambdapure_ObjectType);
+  let builders = [
+    OpBuilder<"OpBuilder &builder, OperationState &state, StringRef callee, ArrayRef<Value> args">
+  ];
 }
 
 def CallOp : Lambdapure_OP<"CallOp",[]>{
@@ -126,31 +133,18 @@ def ResetOp : Lambdapure_OP<"ResetOp",[NoSideEffect,Terminator]>{
 //Helper Operations
 // These operations have matching Runtime functions and assist in lowering ot C
 
-def ObjTagOp : Lambdapure_OP<"ObjTagOp", [NoSideEffect]>{
+def TagGetOp : Lambdapure_OP<"TagGetOp", [NoSideEffect]>{
   let summary = "get tag from object";
   let arguments = (ins  lambdapure_ObjectType:$object);
   let results = (outs I8);
 
 }
 
-def TagCheckOp : Lambdapure_OP<"TagCheckOp", [NoSideEffect]>{
-  let summary = "compare tag to branch";
-  let arguments = (ins AnyInteger:$cmp,I64Attr:$branch);
-  let results = (outs I1);
-  let builders = [
-    OpBuilder<"OpBuilder &builder,OperationState &state,int branch, mlir::Value operand">
-  ];
-}
 
-def ExclCheckOp : Lambdapure_OP<"ExclCheckOp",[NoSideEffect]>{
-  let summary = "Checking exclusivity";
-  let arguments = (ins lambdapure_ObjectType:$object);
-  let results = (outs I1) ;
-  let builders = [
-    OpBuilder<"OpBuilder &builder,OperationState &state, mlir::Value operand">
-  ];
+def TagSetOp : Lambdapure_OP<"TagSetOp",[NoSideEffect]>{
+  let summary = "set tag of an object";
+  let arguments = (ins I8Attr:$tag, lambdapure_ObjectType:$object);
 }
-
 
 
 def BoxOp : Lambdapure_OP<"BoxOp",[NoSideEffect]>{
@@ -165,11 +159,6 @@ def UnboxOp : Lambdapure_OP<"UnboxOp",[NoSideEffect]>{
   let results = (outs I64);
 }
 
-/* def PrintOp : Lambdapure_OP<"Print lean Object", [NoSideEffect]>{
-  let summary = "Printing lambdapure objects";
-  let arguments = (ins lambdapure_ObjectType:$object);
-
-} */
 
 def AllocCtorOp : Lambdapure_OP<"AllocCtorOp", []>{
   let summary = "alloc_ctor";
@@ -201,10 +190,6 @@ def DecOp : Lambdapure_OP<"DecOp",[]>{
   let summary = "add decrementing Operation for reference counting";
   let arguments = (ins lambdapure_ObjectType:$object);
 
-}
-
-def NoOp : Lambdapure_OP<"NoOp",[]>{
-  let summary = "no op for internal usage";
 }
 
 

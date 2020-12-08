@@ -24,83 +24,129 @@ public:
 
     for(int i = 0; i <f.getNumArguments();++i ){
       args.push_back(f.getArgument(i));
-      consumes.push_back(-1);//assume ownerships => starts with 1
+      consumes.push_back(-1);//assume ownerships => starts with -1
     }
     runOnRegion(args,consumes,f.getBody());
 
   }
 
+
+
   void runOnRegion(std::vector<mlir::Value> args,std::vector<int> consumes,mlir::Region &region){
     for(auto it = region.op_begin(); it != region.op_end();++it ){
       auto context = it -> getContext();
       auto builder = mlir::OpBuilder(context);
-      //check each block argument if it is operand of return, call, dec
-      //or storing it in a newl allocated heap value
-      // TODO: check for newly allocated heap value, check for owned/borrowed
+
+      //We start with args consume at -1
+      //check for return,ReuseConstructorOp, Constructor, call, application,partial application
+
       auto name = it -> getName().getStringRef().str();
+
       if(name == "lambdapure.ReturnOp"){
         mlir::Value val = it -> getOperand(0);
-        checkConsume(val,args,consumes);
+        onValue(&*it,args,consumes,val,builder);
         addAllDecs(&*it,args,consumes,builder);
       }
-      if(name == "lambdapure.DecOP" || name == "lambdapure.ReuseAllocCtorOp"){
-        mlir::Value val = it -> getOperand(0);
-        checkConsume(val,args,consumes);
-      }
-      if(name == "lambdapure.CtorSetOp"){
-        //todo check if Alloca is new
-        mlir::Value alloca = it -> getOperand(0);
-        if(OpResult::classof(alloca)){
-            mlir::Value val = it -> getOperand(1);
-            checkConsume(val,args,consumes);
+      else if (name == "lambdapure.ReuseConstructorOp"){
+
+        //change the value of in args to the new value
+        for(int i = 0; i < args.size();++i){
+          if(args[i] == it -> getOperand(0)){
+            args[i] = it -> getOpResult(0);
+          }
         }
       }
-      if(name == "lambdapure.ProjectionOp"){
-        mlir::Value val = it -> getOpResult(0);
-        args.push_back(val);
-        consumes.push_back(1);
-      }
-
-      if(name == "lambdapure.CallOp" || name == "lambdapure.AppOp"){
-        for(auto val = it ->operand_begin();val != it -> operand_end();++val){
-          checkConsume(*val,args,consumes);
+      else if (name == "lambdapure.ConstructorOp"){
+        args.push_back(it -> getOpResult(0));
+        for(int i = 0; i < it -> getNumOperands(); ++i){
+          onValue(&*it,args,consumes, it -> getOperand(i),builder);
         }
       }
+      else if (
+               name == "lambdapure.CallOp"        ||
+               name == "lambdapure.AppOp"         ||
+               name == "lambdapure.PapOp")
+      {
+        for(int i = 0; i < it -> getNumOperands(); ++i){
+          onValue(&*it,args,consumes, it -> getOperand(i),builder);
+        }
+      }
+      else if(name == "lambdapure.CaseOp"){
+            for(int i = 0 ; i < it ->getNumRegions();++i){
+              std::vector<mlir::Value> new_args(args);
+              std::vector<int> new_consumes(consumes);
+              auto &region = it -> getRegion(i);
+              runOnRegion(new_args,new_consumes,region);
+            }
 
-      if(name == "lambdapure.CaseOp" ){
-          //call recursively the next region with copied arg vector and consumes vector
+      }
+      else if(name == "lambdapure.ResetOp"){
+        for(int i = 0 ; i < it ->getNumRegions();++i){
           std::vector<mlir::Value> new_args(args);
           std::vector<int> new_consumes(consumes);
-          // std::cout << "got here" << std::endl;
-          for(int i = 0 ; i < it ->getNumRegions();++i){
-            auto &region = it -> getRegion(i);
+          auto &region = it -> getRegion(i);
+          if(i == 0){
+            runOnResetRegion(it -> getOperand(0),new_args,new_consumes,region);
+          }else{
             runOnRegion(new_args,new_consumes,region);
           }
-          //
+        }
       }
-
     }
   }
 
-  void checkConsume(mlir::Value value,std::vector<mlir::Value> &args,std::vector<int> &consumes){
+
+  void runOnResetRegion(mlir::Value resetValue, std::vector<mlir::Value> args,std::vector<int> consumes,mlir::Region &region){
+    for(auto it = region.op_begin(); it != region.op_end();++it ){
+      auto name = it -> getName().getStringRef().str();
+      if(name == "lambdapure.ProjectionOp" && it -> getOperand(0) == resetValue){
+        args.push_back(it -> getOpResult(0));
+        consumes.push_back(-1);
+      }
+    }
+    std::vector<mlir::Value> new_args(args);
+    std::vector<int> new_consumes(consumes);
+    runOnRegion(new_args,new_consumes,region);
+
+  }
+
+  void onValue(Operation *op,std::vector<mlir::Value> &args, std::vector<int> &consumes,mlir::Value val,mlir::OpBuilder &builder){
+    if(isIn(args,val)){
+      int c = consume(args,consumes,val);
+      if(c >= 1){
+        builder.setInsertionPoint(op);
+        builder.create<lambdapure::IncOp>(builder.getUnknownLoc(),val);
+      }
+    }else {
+      builder.setInsertionPoint(op);
+      builder.create<lambdapure::IncOp>(builder.getUnknownLoc(),val);
+    }
+  }
+
+  int consume(std::vector<mlir::Value> &args, std::vector<int> &consumes,mlir::Value val){
     for(int i = 0; i < args.size(); ++i){
-      if(args.at(i) == value){
+      if(args[i] == val){
         consumes[i]++;
+        return consumes[i];
       }
     }
   }
-
   void addAllDecs(Operation *op, std::vector<mlir::Value> &args,std::vector<int> &consumes,mlir::OpBuilder &builder){
     builder.setInsertionPoint(op);
     for(int i = 0;i < args.size(); ++i){
       if(consumes[i] ==  -1){
         builder.create<lambdapure::DecOp>(builder.getUnknownLoc(),args[i]);
-      }else if(consumes[i] >= 1){
-        for(int j = 0; j < consumes[i];++j){
-          builder.create<lambdapure::IncOp>(builder.getUnknownLoc(),args[i]);
-        }
       }
     }
+  }
+
+
+  bool isIn(std::vector<mlir::Value> vec, mlir::Value val){
+    for(auto v : vec){
+      if (v == val)
+        return true;
+    }
+    return false;
   }
 };
 }//end anonymous namespace

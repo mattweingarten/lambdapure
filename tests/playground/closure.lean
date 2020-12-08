@@ -1,14 +1,7 @@
 set_option trace.compiler.ir.init true
 
-def bar : Nat -> Nat -> Nat
-| 0 , y => y
-| x , _ => x
-
-def foo (x : Nat) : Nat -> Nat := bar x
+def bar : Nat ->  Nat -> Nat -> Nat
+| x,y,z => if x > y + z then 0 else 1
 
 
-def 
-
-
-unsafe def main : List String → IO UInt32
-| _ => pure 0
+def foo (n : Nat) : (Nat -> Nat -> Nat) := bar n

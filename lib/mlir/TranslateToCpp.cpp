@@ -124,12 +124,10 @@ namespace{
       else if(name == "lambdapure.CallOp"){
         translateCallOp(op);
       }
-      else if(name == "lambdapure.ObjTagOp"){
-        translateObjTagOp(op);
+      else if(name == "lambdapure.TagGetOp"){
+        translateTagGetOp(op);
       }
-      else if(name == "lambdapure.TagCheckOp"){
-        translateTagCheckOp(op);
-      }
+
       else if(name == "lambdapure.ResetOp"){
         translateResetOp(op);
       }
@@ -150,6 +148,9 @@ namespace{
       }
       else if (name == "lambdapure.ResetOp"){
         translateResetOp(op);
+      }
+      else if (name == "lambdapure.PapOp"){
+        translatePapOp(op);
       }
       else{
         //do nothing
@@ -176,21 +177,26 @@ namespace{
       std::string o1 = varTable.get(op -> getOperand(0));
       std::string varName = varTable.get(op);
       std::string reuseVar = varTable.get(op -> getOperand(0));
-      outFile << varName << " = " << reuseVar << ";";
+      outFile << "lean_object* " <<  varName << " = " << reuseVar << ";\n";
 
-      // int tag = op -> getAttrOfType<IntegerAttr>("tag").getInt();
-      // int size = op -> getAttrOfType<IntegerAttr>("size").getInt();
-      // outFile << "lean_object* " << varName <<";\n";
-      // outFile << "if(lean_is_exclusive(" << o1 << ")){\n";
-      // outFile << varName << " = " << reuseVar << ";\n}\nelse{\n";
-      // outFile << varName << " = " << "lean_alloc_ctor(" << tag << "," << size << ",0);\n}\n";
     }
 
+
+    void translatePapOp(Operation *op){
+      //TODO: arity of function inference
+      std::string varName = varTable.get(op);
+      std::string callee = op -> getAttrOfType<FlatSymbolRefAttr>("callee").getValue().str();
+      // int size = op -> getNumOperands();
+      outFile << "lean_object * " << varName << " = lean_alloc_closure((void*)("
+      << callee << "),1,0);\n";
+    }
     void translateResetOp(Operation *op){
       std::string o1 = varTable.get(op -> getOperand(0));
-      // outFile << "if(lean_is_exclusive(" << o1 << ")){\n";
-      // translateRegion(op -> getRegion(0));
-      // outFile << "}else{\n";
+      outFile << "if(lean_is_exclusive(" << o1 << ")){\n";
+      translateRegion(op -> getRegion(0));
+      outFile << "}else{\n";
+      translateRegion(op -> getRegion(1));
+      outFile << "}\n";
     }
 
     void translateExclCheckOP(Operation *op){
@@ -281,18 +287,12 @@ namespace{
       }
       outFile << ");\n";
     }
-    void translateObjTagOp(Operation* op){
+    void translateTagGetOp(Operation* op){
       std::string varName = varTable.get(op);
       std::string o1 = varTable.get(op -> getOperand(0));
       outFile << "int " << varName << " = lean_obj_tag(" << o1 << ");\n";
     }
 
-    void translateTagCheckOp(Operation* op){
-      std::string varName = varTable.get(op);
-      std::string o1 = varTable.get(op -> getOperand(0));
-      int branch = op -> getAttrOfType<IntegerAttr>("branch").getInt();
-      outFile << "bool " << varName << " = " << o1 << " == " << branch << ";\n";
-    }
 
 
     void translateDec(Operation *op){

@@ -8,6 +8,6 @@ open Tree
 instance : Inhabited Tree := ⟨Nil⟩
 
 
-def updateNode : Tree -> Tree
+def swap : Tree -> Tree
 | Nil =>  Nil
 | Node l r => Node r l
