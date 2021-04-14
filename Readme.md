@@ -1,5 +1,5 @@
 # Github for bachelor thesis
-## [A static-single-assignment intermediate representation for a pure functional language](./bachelor_thesis_matt_weingarten.pdf)
+## [A static-single-assignment intermediate representation for a pure functional language](./Thesis.pdf)
 
 
 ## Build / Commands
